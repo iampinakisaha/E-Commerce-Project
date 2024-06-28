@@ -4,8 +4,17 @@ import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import imageToBase64 from "../helpers/imageToBase64";
+import SummaryApi from "../common";
+import { toast } from "react-toastify";
+import { loadingActions } from "../store/loadingSlice";
+import { useDispatch, useSelector } from "react-redux";
+import LoadingSpinner from "../helpers/loadingSpinner";
 
 const Signup = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const loadingStatus = useSelector((store) => store.loading);
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [signupData, setSignupData] = useState({
@@ -15,18 +24,6 @@ const Signup = () => {
     profilePic: "",
   });
 
-  const handleOnSubmit = (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const newSignupData = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      password: formData.get("password"),
-      confirmPassword: formData.get("confirmPassword"),
-    };
-    setSignupData(newSignupData);
-  };
-
   const handleUploadPic = async (event) => {
     const file = event.target.files[0];
 
@@ -35,25 +32,79 @@ const Signup = () => {
       ...prevState,
       profilePic: imagePic,
     }));
-    // console.log("imagepic", imagePic);
   };
+  const handleOnSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const newSignupData = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      password: formData.get("password"),
+      confirmPassword: formData.get("confirmPassword"),
+      profilePic: signupData.profilePic,
+    };
 
+    setSignupData(newSignupData);
+
+    // password validation start
+    try {
+      dispatch(loadingActions.setLoading(true));
+
+      const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+      if (newSignupData.password !== newSignupData.confirmPassword) {
+        toast.error("Both Password not matched");
+      } else if (!passwordRegex.test(newSignupData.password)) {
+        toast.error("Password didn't match the criteria");
+      } else {
+        const dataResponse = await fetch(SummaryApi.signUP.url, {
+          method: SummaryApi.signUP.method,
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(newSignupData),
+        });
+
+        const dataApi = await dataResponse.json();
+
+        // console.log("DataApi", dataApi);
+
+        if (dataApi.success) {
+          toast.success(dataApi.message);
+          navigate("/login");
+        }
+        if (dataApi.error) {
+          toast.error(dataApi.message);
+          // navigate("/");
+        }
+      }
+    } catch (err) {
+      // console.log(err);
+    } finally {
+      dispatch(loadingActions.setLoading(false)); // Hide loader
+      console.log("loading action", loadingStatus);
+    }
+  };
+  
   return (
     <section id="signup">
+      {/* Conditionally render spinner */}
+      {loadingStatus ? <LoadingSpinner /> :
       <div className="mx-auto container p-4">
         <div className="bg-white p-2 py-5 w-full max-w-md mx-auto rounded-lg overflow-hidden shadow-lg">
           {/* logo start */}
           <div className="h-20 w-20 mx-auto relative">
             <img
               className="rounded-full"
-              src={signupData.profile || loginIcon}
+              src={signupData.profilePic || loginIcon}
               alt="login Icons"
             />
           </div>
 
           <form onChange={handleUploadPic}>
             <label>
-              {!signupData.profile && (
+              {!signupData.profilePic && (
                 <div className="text-xs bg-opacity-80 bg-slate-200 pb-4 pt-1 text-center cursor-pointer rounded-b-full absolute top-36 left-1/2 transform -translate-x-1/2">
                   Upload Photo
                 </div>
@@ -166,7 +217,7 @@ const Signup = () => {
           </form>
           {/* form end */}
         </div>
-      </div>
+      </div>}
     </section>
   );
 };

@@ -33,10 +33,10 @@ async function userSignUpController(req,res){
     }
 
     const userData = new userModel(payload)
-    const saveUser = userData.save()
-
+    const saveUser = await userData.save()
+    await new Promise((resolve) => setTimeout(() => resolve(), 4000)); // this will await for 4000 ms to deliver the response
     res.status(201).json({
-      data: true,
+      data: saveUser,
       success: true,
       error: false,
       message: "User Created Successfully!"
