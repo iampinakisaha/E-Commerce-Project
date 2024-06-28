@@ -4,6 +4,14 @@ const SummaryApi = {
   signUP : {
     url : `${backendDomain}/api/signup`,
     method: "post"
+  },
+  LogIn : {
+    url : `${backendDomain}/api/login`,
+    method: "post"
+  },
+  current_user : {
+    url : `${backendDomain}/api/user-details`,
+    method: "get"
   }
 }
 

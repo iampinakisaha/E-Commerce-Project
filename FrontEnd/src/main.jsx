@@ -13,7 +13,7 @@ root.render(
   <React.StrictMode>
     <Provider store={eCommerceStore}>
       <RouterProvider router={router}>
-      <LoadingSpinner />
+        <LoadingSpinner />
         <App />
       </RouterProvider>
     </Provider>
