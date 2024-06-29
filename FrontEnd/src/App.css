@@ -1,3 +1,14 @@
 .customShadow{
   box-shadow: 0px 0px 15px 2px rgba(0, 0, 0, .2);
 }
+
+/* user table css */
+.userTable{
+  @apply bg-white
+}
+.userTable th{
+  @apply border text-base font-medium
+}
+.userTable td{
+  @apply border text-base text-center
+}

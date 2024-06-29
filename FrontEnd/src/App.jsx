@@ -35,7 +35,6 @@ function App() {
 
   return (
     <>
-      {console.log("fetch user details",fetchUserDetails)}
       <UserContext.Provider value = {{
         fetchUserDetails //user details fetched
         

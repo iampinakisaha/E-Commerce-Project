@@ -129,7 +129,6 @@ const Header = () => {
                     //implement onclick for logout
                     onClick={handleLogout}
                   >
-                    {console.log(user.email)}
                     Logout
                   </button>
                 </Link>
