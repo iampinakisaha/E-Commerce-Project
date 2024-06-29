@@ -13,7 +13,7 @@ import LoadingSpinner from "../helpers/loadingSpinner";
 const Signup = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const loadingStatus = useSelector((store) => store.loading);
+  const loadingStatus = useSelector((state) => state.loading);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
