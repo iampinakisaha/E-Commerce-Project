@@ -18,7 +18,6 @@ const AllUsers = () => {
 
       const dataResponse = await dataFetch.json();
 
-      
       if (dataResponse.success) {
         setAllUsers(dataResponse.data);
       } else {
@@ -38,11 +37,19 @@ const AllUsers = () => {
     setEditingUserId(user);
   };
 
+  // Function to update the allUsers state after editing a user
+  const updateUserInList = (updatedUser) => {
+    const updatedUsers = allUsers.map((user) =>
+      user._id === updatedUser._id ? updatedUser : user
+    );
+    setAllUsers(updatedUsers);
+  };
+
   return (
     <div className="bg-white pb-4">
       <table className="w-full userTable relative">
         <thead>
-          <tr>
+          <tr className="bg-slate-600 text-white">
             <th>Sr.</th>
             <th>Name</th>
             <th>Email</th>
@@ -77,6 +84,7 @@ const AllUsers = () => {
         <ChangeUserData
           user={editingUserId}
           onClose={() => setEditingUserId(null)}
+          onUpdateUser={updateUserInList} // Pass the callback function
         />
       )}
     </div>

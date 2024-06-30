@@ -4,10 +4,11 @@ import { Link } from "react-router-dom";
 import { setUserDetails } from "../store/userSlice";
 
 const Profile = () => {
-  const userRole = useSelector((state) => state?.user?.user?.role)
- 
+  const user = useSelector((state) => state?.user?.user);
+  const userRole = useSelector((state) => state?.user?.user?.role);
+  if (user?._id) {
   return (
-    <div className="hidden absolute bg-white bottom-0 top-8 h-fit p-4 shadow-lg rounded-md group-hover:block">
+    <div className="hidden absolute bg-white bottom-0 top-8 h-fit p-4 shadow-lg rounded-md z-20 group-hover:block">
               <nav className="grid w-full h-full min-w-48 ">
                 <Link to={"/"}>
                 <div className="p-1 m-2  hover:text-red-600 cursor-pointer transition-transform duration-300 ease-in-out transform active:scale-110 hover:scale-110">Profile</div>
@@ -25,7 +26,11 @@ const Profile = () => {
                 </div>
               </nav>
             </div>
-  );
+  );} else {
+    // // Redirect or navigate to another page if not admin
+    // navigate("/");
+    return null; // Or handle non-admin case appropriately
+  }
 };
 
 export default Profile;

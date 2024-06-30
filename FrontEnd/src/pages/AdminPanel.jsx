@@ -1,13 +1,14 @@
 import React from "react";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { useSelector } from "react-redux";
-import { Link, Outlet } from "react-router-dom";
-
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import ROLE from "../common/role";
 const AdminPanel = () => {
   const user = useSelector((state) => state?.user?.user);
-  const userRole = useSelector((state) => state?.user?.user?.role)
+  const userRole = useSelector((state) => state?.user?.user?.role);
+  const navigate = useNavigate();
   // console.log(userRole)
-  if (userRole === "ADMIN") {
+  if (userRole === ROLE.ADMIN) {
     return (
       // check if user is admin then show the content
       <div className="min-h-[calc(100vh-180px)] md:flex hidden">
@@ -61,6 +62,10 @@ const AdminPanel = () => {
         </main>
       </div>
     );
+  } else {
+    // Redirect or navigate to another page if not admin
+    navigate("/");
+    return null; // Or handle non-admin case appropriately
   }
 };
 
