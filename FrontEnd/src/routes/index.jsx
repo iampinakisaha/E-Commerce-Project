@@ -7,7 +7,12 @@ import Signup from "../pages/Signup";
 import AdminPanel from "../pages/AdminPanel";
 import AllUsers from "../pages/AllUsers";
 import AllProducts from "../pages/AllProducts";
+import ErrorPage from "../pages/ErrorPage";
 export const router = createBrowserRouter([
+  {
+    path: "*",
+    element: <ErrorPage/>
+  },
   {
     path: "/",
     element: <App />,

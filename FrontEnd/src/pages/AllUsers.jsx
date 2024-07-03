@@ -4,13 +4,21 @@ import { toast } from "react-toastify";
 import moment from "moment";
 import { FaEdit } from "react-icons/fa";
 import ChangeUserData from "../components/ChangeUserData";
+import { loadingActions } from "../store/loadingSlice";
+import { useDispatch, useSelector } from "react-redux";
+import LoadingSpinner from "../helpers/loadingSpinner";
+
 
 const AllUsers = () => {
+  const dispatch = useDispatch();
+  const loadingStatus = useSelector((state) => state.loading);
   const [allUsers, setAllUsers] = useState([]);
   const [editingUserId, setEditingUserId] = useState(null);
 
   const fetchAllUsers = async () => {
     try {
+      dispatch(loadingActions.setLoading(true));
+
       const dataFetch = await fetch(SummaryApi.all_user.url, {
         method: SummaryApi.all_user.method,
         credentials: "include",
@@ -26,6 +34,8 @@ const AllUsers = () => {
     } catch (error) {
       console.error("Error fetching users:", error);
       toast.error("Failed to fetch users");
+    }finally{
+      dispatch(loadingActions.setLoading(false)); // Hide loader
     }
   };
 
@@ -46,6 +56,11 @@ const AllUsers = () => {
   };
 
   return (
+    <>
+    {/* Conditionally render spinner */}
+    {loadingStatus ? (
+        <LoadingSpinner />
+      ) : (
     <div className="bg-white pb-4">
       <table className="w-full userTable relative">
         <thead>
@@ -88,6 +103,8 @@ const AllUsers = () => {
         />
       )}
     </div>
+    )}
+    </>
   );
 };
 

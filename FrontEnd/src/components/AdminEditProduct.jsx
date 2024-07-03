@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import ProductCatagory from "../helpers/ProductCatagory";
 import { FaFileUpload } from "react-icons/fa";
@@ -12,19 +12,21 @@ import { loadingActions } from "../store/loadingSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingSpinner from "../helpers/loadingSpinner";
 import AllProducts from "../pages/AllProducts";
-const UploadProducts = ({ onClose }) => {
+
+const AdminEditProduct = ({onClose, item, fetchData}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const loadingStatus = useSelector((state) => state.loading);
-  //initialize state for the data tp enter
+  //initialize state for the item tp enter
   const [productData, setProductData] = useState({
-    productName: "",
-    brandName: "",
-    catagory: "",
-    productImage: [],
-    description: "",
-    price: "",
-    selling: "",
+    ...item, // as it is already created we need to provide ID also while updating
+    productName: item?.productName,
+    brandName: item?.brandName,
+    catagory: item?.catagory,
+    productImage: item?.productImage || [],
+    description: item?.description,
+    price: item?.price,
+    selling: item?.selling,
   });
   const [openFullScreenImage, setOpenFullScreenImage] = useState(false);
   const [fullScreenImage, setFullScreenImage] = useState("");
@@ -68,49 +70,49 @@ const UploadProducts = ({ onClose }) => {
     event.preventDefault();
 
     try {
-
+      console.log("item",item)
       dispatch(loadingActions.setLoading(true));
 
-      const dataResponse = await fetch (SummaryApi.upload_product.url,{
-        method: SummaryApi.upload_product.method,
+      const dataResponse = await fetch (SummaryApi.update_product.url,{
+        method: SummaryApi.update_product.method,
         credentials: "include",
         headers: {
           "content-type": "application/json",
         },
         body: JSON.stringify(productData),
+      
       })
-
+      
       const dataApi = await dataResponse.json();
       
       if (dataApi.success) {
+        fetchData();
         toast.success(dataApi.message);
         onClose(true);
-        
         navigate("/admin-panel/products");
         
+     
+      
         
       } else if (dataApi.error) {
         toast.error(dataApi.message);
       }
 
     }catch(err){
-      console.error("Error Uploading Product...", err);
-      toast.error("Error Uploading Product...");
+      console.error("Error Updating Product...", err);
+      toast.error("Error Updating Product...");
     }finally{
       dispatch(loadingActions.setLoading(false)); // Hide loader
     }
   }
-  // Function to handle product form submit - end
+
+ 
+
   return (
-    <>
-    {/* Conditionally render spinner */}
-    {loadingStatus ? (
-        <LoadingSpinner />
-      ) : (
-    <div className="bg-slate-200 bg-opacity-35 fixed h-full w-full right-0 left-0 top-0 bottom-0 flex justify-center items-center">
+    <div className="bg-slate-200 bg-opacity-35 fixed h-full w-full right-0 left-0 top-0 bottom-0 flex justify-center items-center z-50">
       <div className="bg-white p-4 rounded-md w-full max-w-[50%] h-full max-h-[80%] overflow-hidden">
         <div className=" p-4 m-2 flex justify-between items-center rounded ">
-          <h2 className="font-semibold text-xl">Upload Products</h2>
+          <h2 className="font-semibold text-xl">Edit Products</h2>
           <div
             className="bg-red-600 p-1 rounded-full  text-white text-2xl w-fit ml-auto hover:scale-110 transition-all ease-in-out active:bg-red-800 active:scale-90 cursor-pointer"
             onClick={onClose}
@@ -190,7 +192,8 @@ const UploadProducts = ({ onClose }) => {
                 <input
                   type="file"
                   id="uploadImageInput"
-                  required
+                  name="uploadImageInput"
+                  // required
                   className="hidden"
                   onChange={handleUploadProduct}
                 ></input>
@@ -200,7 +203,7 @@ const UploadProducts = ({ onClose }) => {
           <div className="flex flex-wrap gap-2">
             {productData?.productImage[0] ? (
               productData.productImage.map((item,index) => (
-                <div key={item+index} className="relative cursor-pointer hover:scale-150 transition-all ease-in-out group">
+                <div key={index} className="relative cursor-pointer hover:scale-150 transition-all ease-in-out group">
                   <img
                     src={item}
                     width={100}
@@ -299,9 +302,7 @@ const UploadProducts = ({ onClose }) => {
 
       {/* Image full screen display end */}
     </div>
-    )}
-    </>
-  );
-};
+  )
+}
 
-export default UploadProducts;
+export default AdminEditProduct

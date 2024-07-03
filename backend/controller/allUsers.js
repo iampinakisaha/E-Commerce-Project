@@ -17,7 +17,7 @@ async function allUserDetailsController(req, res) {
       });
     }
 
-    console.log("USER ROLE: ", user.role);
+    // console.log("USER ROLE: ", user.role);
 
     // Fetch all users from the database
     const userList = await userModel.find({});

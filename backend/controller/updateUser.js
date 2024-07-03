@@ -7,7 +7,7 @@ async function updateUserDetailsController(req, res) {
 
     const { _id, email, name, role } = req.body;
 
-    console.log(" USER ID is:", _id);
+   
 
     const payload = {
       ...(email && { email: email }),
@@ -16,7 +16,7 @@ async function updateUserDetailsController(req, res) {
     };
     const user = await userModel.findById(sessionUser);
 
-    console.log(" USER ROLE:", user.role);
+    
 
     const updateUser = await userModel.findByIdAndUpdate(_id, payload);
 

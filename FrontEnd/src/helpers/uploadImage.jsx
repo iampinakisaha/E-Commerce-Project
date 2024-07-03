@@ -1,4 +1,4 @@
-const url =`{process.env.${URL}}`
+const url = `https://api.cloudinary.com/v1_1/df7cb8u1b/image/upload`
 
 const uploadImage = async(image) => {
   const formData = new FormData()
