@@ -43,6 +43,7 @@ export const allProductSlice = createSlice({
     },
     fetchAllProduct: (state, action) => {
       state.fetchStatus = action.payload;
+      console.log(state.fetchStatus)
     },
   },
 });

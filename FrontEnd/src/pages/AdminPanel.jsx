@@ -50,8 +50,9 @@ const AdminPanel = () => {
                 to={"products"}
                 className="px-2 py-2 hover:bg-slate-100 shadow-md mt-2 rounded"
               >
-                Products
+                All Products
               </Link>
+              
             </nav>
           </div>
           {/* navigation end */}

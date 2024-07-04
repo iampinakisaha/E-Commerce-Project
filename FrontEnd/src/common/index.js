@@ -42,6 +42,11 @@ const SummaryApi = {
     method: "post"
   },
 
+  upload_product_catagory : {
+    url : `${backendDomain}/api/upload-product-catagory`,
+    method: "post"
+  },
+
 }
 
 export default SummaryApi

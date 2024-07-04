@@ -9,19 +9,20 @@ import LoadingSpinner from "../helpers/loadingSpinner";
 import ProductCard from "../components/ProductCard";
 import ProductCatagory from "../helpers/ProductCatagory";
 import { setProducts, fetchAllProduct } from "../store/allProductSlice";
+import { MdOutlineAdd } from "react-icons/md";
+import UploadProductCatagory from "../components/UploadProductCatagory";
 
 const AllProducts = () => {
   const dispatch = useDispatch();
   const allProducts = useSelector((state) => state.productData.products);
   const fetchStatus = useSelector((state) => state.productData.fetchStatus);
-
   const loadingStatus = useSelector((state) => state.loading);
-  
+
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [catagorySelected, setCatagorySelected] = useState("--All--");
   const [openUploadProduct, setOpenUploadProduct] = useState(false);
- 
-  
+  const [openUploadCatagory, setOpenUploadCatagory] = useState(false);
+
   // Fetch all products
   const fetchAllProducts = async () => {
     try {
@@ -76,15 +77,12 @@ const AllProducts = () => {
     }
   }, [catagorySelected, allProducts]);
 
-  //call fetch all product function whenever value of fetchAllProduct reducer ib store changes
   useEffect(() => {
     if (fetchStatus) {
       fetchAllProducts();
       dispatch(fetchAllProduct(false));
-    } 
-  }, [fetchStatus]);
-
-  
+    }
+  }, [fetchStatus, dispatch]);
 
   return (
     <>
@@ -94,15 +92,13 @@ const AllProducts = () => {
       ) : (
         <div>
           <div className="bg-white py-2 px-4 flex justify-between shadow-md items-center">
-            {/* <h2 className="font-bold text-slate-800 text-lg">All Products</h2> */}
-            {/* Catagory selector */}
             {allProducts.length > 0 && (
               <div className="flex gap-4">
                 <label htmlFor="catagory" className="font-semibold mt-3">
-                Product Catagory:
+                  Product Catagory:
                 </label>
 
-                <select 
+                <select
                   value={catagorySelected}
                   name="catagory"
                   required
@@ -112,45 +108,70 @@ const AllProducts = () => {
                   <option value="--All--">--All--</option>
                   {ProductCatagory &&
                     ProductCatagory.map((item, index) => (
-                      <option value={item.value} key={index} >
+                      <option value={item.value} key={index}>
                         {item.label}
                       </option>
                     ))}
                 </select>
-                </div>
+                {/* add new catagory - start */}
+                <button
+                  className="flex justify-center items-center p-3 text-md text-white  bg-green-400 rounded-full hover:bg-green-600 transition-all ease-in-out active:scale-95 cursor-pointer"
+                  onClick={() => setOpenUploadCatagory(true)}
+                >
+                  <MdOutlineAdd />
+                </button>
+                {/* add new catagory end */}
+              </div>
             )}
-            {/* End catagory selector */}
-            <div className="flex justify-center items-center gap-5"> 
-            <span to={"/admin-panel/products"} className="text-2xl cursor-pointer hover:text-gray-400 active:scale-90" onClick={fetchAllProducts}
-            
-            
-            ><LuRefreshCcw /></span>
 
-            <button
-              className="p-2 bg-red-600 rounded-full text-white text-sm hover:scale-110 transition-all ease-in-out active:bg-red-800 active:scale-90"
-              onClick={() => setOpenUploadProduct(true)}
-            >
-              Upload Products
-            </button>
+            <div className="flex justify-center items-center gap-5">
+              <span
+                className="text-2xl cursor-pointer hover:text-gray-400 active:scale-90"
+                onClick={fetchAllProducts}
+              >
+                <LuRefreshCcw />
+              </span>
+
+              <button
+                className="p-2 bg-red-600 rounded-full text-white text-sm hover:scale-110 transition-all ease-in-out active:bg-red-800 active:scale-90"
+                onClick={() => setOpenUploadProduct(true)}
+              >
+                Upload Products
+              </button>
             </div>
           </div>
           {/* Show All Products Start */}
-          <div rel="main container" className="flex flex-wrap  gap-2 py-4 h-[calc(100vh-190px)] overflow-y-scroll bg-slate-50">
+          <div
+            rel="main container"
+            className="flex flex-wrap gap-2 py-4 h-[calc(100vh-190px)] overflow-y-scroll bg-slate-50"
+          >
             {filteredProducts.map((item, index) => (
-              <ProductCard key={index} item={item}/>
+              <ProductCard key={item._id+index} item={item} />
             ))}
           </div>
           {/* Show All Products End */}
           {openUploadProduct && (
-        <UploadProducts
-          onClose={(success) => {
-            setOpenUploadProduct(false);
-            if (success) {
-              fetchAllProducts(); // Refetch products after successful upload
-            }
-          }}
-        />
-      )}
+            <UploadProducts
+              onClose={(success) => {
+                setOpenUploadProduct(false);
+                if (success) {
+                  fetchAllProducts(); // Refetch products after successful upload
+                }
+              }}
+            />
+          )}
+          {/* upload catagory -start */}
+          {openUploadCatagory && (
+            <UploadProductCatagory
+              onCloseCatagory={(success) => {
+                setOpenUploadCatagory(false);
+                if (success) {
+                  fetchAllProducts(); // Refetch products after successful upload
+                }
+              }}
+            />
+          )}
+          {/* upload catagory -end */}
         </div>
       )}
     </>
