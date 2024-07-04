@@ -12,12 +12,16 @@ import { loadingActions } from "../store/loadingSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingSpinner from "../helpers/loadingSpinner";
 import AllProducts from "../pages/AllProducts";
+import { fetchAllProduct, setProducts, updateProductData } from "../store/allProductSlice";
 
 const AdminEditProduct = ({onClose, item, fetchData}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const loadingStatus = useSelector((state) => state.loading);
-  //initialize state for the item tp enter
+  const allProducts = useSelector((state) => state.productData.products);
+
+  
+  //initialize state for the item to enter
   const [productData, setProductData] = useState({
     ...item, // as it is already created we need to provide ID also while updating
     productName: item?.productName,
@@ -50,7 +54,7 @@ const AdminEditProduct = ({onClose, item, fetchData}) => {
 
   // function to delete product image -start
     const handleOnDeleteProductImage = async(index) => {
-      console.log("image index", index)
+      
 
       const newProductImage = [...productData.productImage]
       newProductImage.splice(index,1)
@@ -70,7 +74,7 @@ const AdminEditProduct = ({onClose, item, fetchData}) => {
     event.preventDefault();
 
     try {
-      console.log("item",item)
+      
       dispatch(loadingActions.setLoading(true));
 
       const dataResponse = await fetch (SummaryApi.update_product.url,{
@@ -86,12 +90,14 @@ const AdminEditProduct = ({onClose, item, fetchData}) => {
       const dataApi = await dataResponse.json();
       
       if (dataApi.success) {
-        fetchData();
+        dispatch(updateProductData(dataApi.data));
+        
+        dispatch(fetchAllProduct(true));
         toast.success(dataApi.message);
         onClose(true);
         navigate("/admin-panel/products");
         
-     
+        
       
         
       } else if (dataApi.error) {
@@ -109,7 +115,9 @@ const AdminEditProduct = ({onClose, item, fetchData}) => {
  
 
   return (
-    <div className="bg-slate-200 bg-opacity-35 fixed h-full w-full right-0 left-0 top-0 bottom-0 flex justify-center items-center z-50">
+    
+    <>
+    {loadingStatus ? (<LoadingSpinner/>) : (<div className="bg-slate-200 bg-opacity-35 fixed h-full w-full right-0 left-0 top-0 bottom-0 flex justify-center items-center z-50">
       <div className="bg-white p-4 rounded-md w-full max-w-[50%] h-full max-h-[80%] overflow-hidden">
         <div className=" p-4 m-2 flex justify-between items-center rounded ">
           <h2 className="font-semibold text-xl">Edit Products</h2>
@@ -287,7 +295,7 @@ const AdminEditProduct = ({onClose, item, fetchData}) => {
             type="submit"
             className="px-3 py-2  bg-red-600 rounded-md text-white text-sm transition-all ease-in-out active:bg-red-800 active:scale-95"
           >
-            Upload
+            Update
           </button>
           {/* button end */}
         </form>
@@ -301,7 +309,9 @@ const AdminEditProduct = ({onClose, item, fetchData}) => {
       )}
 
       {/* Image full screen display end */}
-    </div>
+    </div>)}
+      
+    </>
   )
 }
 

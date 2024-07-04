@@ -37,6 +37,11 @@ const SummaryApi = {
     url : `${backendDomain}/api/update-product`,
     method: "post"
   },
+  delete_product : {
+    url : `${backendDomain}/api/delete-product`,
+    method: "post"
+  },
+
 }
 
 export default SummaryApi

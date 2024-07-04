@@ -1,18 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
+import AllProducts from "../pages/AllProducts";
 
 export const allProductSlice = createSlice({
   name: "productData",
   initialState: {
-    products: [],
+    products : [{
+      productName: "",
+      brandName: "",
+      catagory: "",
+      productImage: [],
+      description: "",
+      price: "",
+      selling: "",
+    }],
+    fetchStatus: false,
   },
   reducers: {
     setProducts: (state, action) => {
+      
       state.products = action.payload;
     },
     addNewProduct: (state, action) => {
       state.products.push(action.payload);
     },
-    updateNewProduct: (state, action) => {
+    updateProductData: (state, action) => {
       const index = state.products.findIndex(
         (product) => product._id === action.payload._id
       );
@@ -24,16 +35,18 @@ export const allProductSlice = createSlice({
       }
     },
     deleteProduct: (state, action) => {
+      // console.log("item deletion received",action.payload)
       state.products = state.products.filter(
-        (product) => product._id !== action.payload._id
+        (product) => product._id !== action.payload
       );
+      // console.log(state.products)
     },
     fetchAllProduct: (state, action) => {
-      state.products = action.payload;
+      state.fetchStatus = action.payload;
     },
   },
 });
 
-export const { setProducts, addNewProduct, updateNewProduct, deleteProduct, fetchAllProduct } = allProductSlice.actions;
+export const { setProducts, addNewProduct, updateProductData, deleteProduct, fetchAllProduct } = allProductSlice.actions;
 
 export default allProductSlice;

@@ -13,7 +13,7 @@ const updateUserDetailsController = require("../controller/updateUser");
 const uploadProductController = require("../controller/uploadProduct");
 const getAllProductController = require("../controller/getProduct");
 const updateProductController = require("../controller/updateProduct");
-
+const deleteProductController = require("../controller/deleteProduct");
 
 router.post("/signup", userSignUpController);
 router.post("/login", userSignInController);
@@ -26,4 +26,7 @@ router.post("/update-user", authToken, updateUserDetailsController);
 router.post("/upload-product", authToken, uploadProductController);
 router.get("/allProducts", authToken, getAllProductController);
 router.post("/update-product", authToken, updateProductController);
+router.post("/delete-product", authToken, deleteProductController);
+
+
 module.exports = router;

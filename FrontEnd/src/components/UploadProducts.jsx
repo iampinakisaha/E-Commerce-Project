@@ -11,13 +11,17 @@ import { toast } from "react-toastify";
 import { loadingActions } from "../store/loadingSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingSpinner from "../helpers/loadingSpinner";
-import AllProducts from "../pages/AllProducts";
+import { addNewProduct } from "../store/allProductSlice";
 const UploadProducts = ({ onClose }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const loadingStatus = useSelector((state) => state.loading);
+  const products = useSelector((state) => state.productData.products);
+
+  console.log("product data are",products)
+  
   //initialize state for the data tp enter
-  const [productData, setProductData] = useState({
+  const [newProductData, setNewProductData] = useState({
     productName: "",
     brandName: "",
     catagory: "",
@@ -26,11 +30,12 @@ const UploadProducts = ({ onClose }) => {
     price: "",
     selling: "",
   });
+  
   const [openFullScreenImage, setOpenFullScreenImage] = useState(false);
   const [fullScreenImage, setFullScreenImage] = useState("");
   const handleOnChange = (event) => {
     const { name, value } = event.target;
-    setProductData((prev) => ({
+    setNewProductData((prev) => ({
       ...prev,
       [name] : value,
     }));
@@ -40,25 +45,25 @@ const UploadProducts = ({ onClose }) => {
 
     const uploadImageCloudinary = await uploadImage(file);
 
-    setProductData((prev) => ({
+    setNewProductData((prev) => ({
       ...prev,
       productImage: [...prev.productImage, uploadImageCloudinary.url],
     }));
   };
 
   // function to delete product image -start
-    const handleOnDeleteProductImage = async(index) => {
-      console.log("image index", index)
+  const handleOnDeleteProductImage = async(index) => {
+    console.log("image index", index)
 
-      const newProductImage = [...productData.productImage]
-      newProductImage.splice(index,1)
+    const newProductImage = [...newProductData.productImage]
+    newProductImage.splice(index,1)
 
-      setProductData((prev) => ({
-        ...prev,
-        productImage: [...newProductImage],
-      }));
+    setNewProductData((prev) => ({
+      ...prev,
+      productImage: [...newProductImage],
+    }));
 
-    }
+  }
   // function to delete product image - end
 
   // Function to handle product form submit - start
@@ -77,15 +82,16 @@ const UploadProducts = ({ onClose }) => {
         headers: {
           "content-type": "application/json",
         },
-        body: JSON.stringify(productData),
+        body: JSON.stringify(newProductData),
       })
 
       const dataApi = await dataResponse.json();
       
       if (dataApi.success) {
+        // Update products in Redux store after successful upload
+        dispatch(addNewProduct(dataApi.data));
         toast.success(dataApi.message);
         onClose(true);
-        
         navigate("/admin-panel/products");
         
         
@@ -128,7 +134,7 @@ const UploadProducts = ({ onClose }) => {
             type="text"
             id="productName"
             placeholder="Enter Product Name"
-            value={productData.productName}
+            value={newProductData.productName}
             name="productName"
             onChange={handleOnChange}
             required
@@ -144,7 +150,7 @@ const UploadProducts = ({ onClose }) => {
             type="text"
             id="brandName"
             placeholder="Enter Brand Name"
-            value={productData.brandName}
+            value={newProductData.brandName}
             name="brandName"
             required
             onChange={handleOnChange}
@@ -158,7 +164,7 @@ const UploadProducts = ({ onClose }) => {
           </label>
 
           <select
-            value={productData.catagory}
+            value={newProductData.catagory}
             name="catagory"
             required
             onChange={handleOnChange}
@@ -198,8 +204,8 @@ const UploadProducts = ({ onClose }) => {
             </div>
           </label>
           <div className="flex flex-wrap gap-2">
-            {productData?.productImage[0] ? (
-              productData.productImage.map((item,index) => (
+            {newProductData?.productImage[0] ? (
+              newProductData.productImage.map((item,index) => (
                 <div key={item+index} className="relative cursor-pointer hover:scale-150 transition-all ease-in-out group">
                   <img
                     src={item}
@@ -234,7 +240,7 @@ const UploadProducts = ({ onClose }) => {
             type="number"
             id="price"
             placeholder="Enter Price"
-            value={productData.price}
+            value={newProductData.price}
             name="price"
             required
             onChange={handleOnChange}
@@ -251,7 +257,7 @@ const UploadProducts = ({ onClose }) => {
             type="number"
             id="selling"
             placeholder="Enter Selling Price"
-            value={productData.selling}
+            value={newProductData.selling}
             name="selling"
             required
             onChange={handleOnChange}
@@ -270,7 +276,7 @@ const UploadProducts = ({ onClose }) => {
             type="Text"
             id="description"
             placeholder="Enter Product Description"
-            value={productData.description}
+            value={newProductData.description}
             name="description"
             required
             onChange={handleOnChange}

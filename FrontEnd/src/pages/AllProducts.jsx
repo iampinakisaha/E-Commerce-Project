@@ -8,14 +8,19 @@ import { useDispatch, useSelector } from "react-redux";
 import LoadingSpinner from "../helpers/loadingSpinner";
 import ProductCard from "../components/ProductCard";
 import ProductCatagory from "../helpers/ProductCatagory";
-import { setProducts } from "../store/productSlice";
+import { setProducts, fetchAllProduct } from "../store/allProductSlice";
 
 const AllProducts = () => {
-  const [allProducts, setAllProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const dispatch = useDispatch();
-  const [categorySelected, setCategorySelected] = useState("");
+  const allProducts = useSelector((state) => state.productData.products);
+  const fetchStatus = useSelector((state) => state.productData.fetchStatus);
+
   const loadingStatus = useSelector((state) => state.loading);
+  
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [catagorySelected, setCatagorySelected] = useState("--All--");
+  const [openUploadProduct, setOpenUploadProduct] = useState(false);
+ 
   
   // Fetch all products
   const fetchAllProducts = async () => {
@@ -30,8 +35,7 @@ const AllProducts = () => {
       const dataResponse = await dataFetch.json();
 
       if (dataResponse.success) {
-        setAllProducts(dataResponse?.data || []);
-        setFilteredProducts(dataResponse?.data || []);
+        dispatch(setProducts(dataResponse?.data || []));
       } else {
         toast.error(dataResponse.message || "Failed to fetch Products");
       }
@@ -42,13 +46,14 @@ const AllProducts = () => {
     }
   };
 
-  const handleOnSelectCategory = (event) => {
-    const selectedCategory = event.target.value;
-    setCategorySelected(selectedCategory);
+  const handleOnSelectCatagory = (event) => {
+    event.preventDefault();
+    const selectedCatagory = event.target.value;
+    setCatagorySelected(selectedCatagory);
 
-    if (selectedCategory) {
+    if (selectedCatagory && selectedCatagory !== "--All--") {
       const filtered = allProducts.filter(
-        (product) => product.catagory === selectedCategory
+        (product) => product.catagory === selectedCatagory
       );
       setFilteredProducts(filtered);
     } else {
@@ -60,7 +65,26 @@ const AllProducts = () => {
     fetchAllProducts();
   }, []);
 
-  const [openUploadProduct, setOpenUploadProduct] = useState(false);
+  useEffect(() => {
+    if (catagorySelected === "--All--") {
+      setFilteredProducts(allProducts);
+    } else {
+      const filtered = allProducts.filter(
+        (product) => product.catagory === catagorySelected
+      );
+      setFilteredProducts(filtered);
+    }
+  }, [catagorySelected, allProducts]);
+
+  //call fetch all product function whenever value of fetchAllProduct reducer ib store changes
+  useEffect(() => {
+    if (fetchStatus) {
+      fetchAllProducts();
+      dispatch(fetchAllProduct(false));
+    } 
+  }, [fetchStatus]);
+
+  
 
   return (
     <>
@@ -71,21 +95,21 @@ const AllProducts = () => {
         <div>
           <div className="bg-white py-2 px-4 flex justify-between shadow-md items-center">
             {/* <h2 className="font-bold text-slate-800 text-lg">All Products</h2> */}
-            {/* Category selector */}
+            {/* Catagory selector */}
             {allProducts.length > 0 && (
               <div className="flex gap-4">
-                <label htmlFor="category" className="font-semibold mt-3">
-                Product Category:
+                <label htmlFor="catagory" className="font-semibold mt-3">
+                Product Catagory:
                 </label>
 
-                <select
-                  value={categorySelected}
-                  name="category"
+                <select 
+                  value={catagorySelected}
+                  name="catagory"
                   required
-                  onChange={handleOnSelectCategory}
+                  onChange={handleOnSelectCatagory}
                   className="p-2 bg-slate-100 border rounded cursor-pointer"
                 >
-                  <option value="">--All--</option>
+                  <option value="--All--">--All--</option>
                   {ProductCatagory &&
                     ProductCatagory.map((item, index) => (
                       <option value={item.value} key={index} >
@@ -95,7 +119,7 @@ const AllProducts = () => {
                 </select>
                 </div>
             )}
-            {/* End category selector */}
+            {/* End catagory selector */}
             <div className="flex justify-center items-center gap-5"> 
             <span to={"/admin-panel/products"} className="text-2xl cursor-pointer hover:text-gray-400 active:scale-90" onClick={fetchAllProducts}
             
@@ -111,9 +135,9 @@ const AllProducts = () => {
             </div>
           </div>
           {/* Show All Products Start */}
-          <div rel="main container" className="flex flex-wrap  gap-2 py-4">
-            {filteredProducts.map((item) => (
-              <ProductCard key={item._id} item={item} fetchData={fetchAllProducts}/>
+          <div rel="main container" className="flex flex-wrap  gap-2 py-4 h-[calc(100vh-190px)] overflow-y-scroll bg-slate-50">
+            {filteredProducts.map((item, index) => (
+              <ProductCard key={index} item={item}/>
             ))}
           </div>
           {/* Show All Products End */}
