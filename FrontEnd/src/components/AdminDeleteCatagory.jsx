@@ -1,13 +1,12 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllProduct, deleteProduct } from "../store/allProductSlice";
+import {  deleteCatagory } from "../store/allCatagorySlice";
 import SummaryApi from "../common";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../helpers/loadingSpinner";
 import { loadingActions } from "../store/loadingSlice";
 
-const AdminDeleteProduct = ({onDelete, itemDelete}) => {
-
+const AdminDeleteCatagory = ({itemDelete,onDelete }) => {
   const loadingStatus = useSelector((state) => state.loading);
   const dispatch = useDispatch();
   const handleDeleteYes = async(event)=>{
@@ -16,8 +15,8 @@ const AdminDeleteProduct = ({onDelete, itemDelete}) => {
       
       dispatch(loadingActions.setLoading(true));
 
-      const dataResponse = await fetch (SummaryApi.delete_product.url,{
-        method: SummaryApi.delete_product.method,
+      const dataResponse = await fetch (SummaryApi.delete_catagory.url,{
+        method: SummaryApi.delete_catagory.method,
         credentials: "include",
         headers: {
           "content-type": "application/json",
@@ -29,9 +28,7 @@ const AdminDeleteProduct = ({onDelete, itemDelete}) => {
       const dataApi = await dataResponse.json();
       
       if (dataApi.success) {
-        dispatch(deleteProduct(dataApi.data));
-        
-        // dispatch(fetchAllProduct(true));
+        dispatch(deleteCatagory(dataApi.data));
         toast.success(dataApi.message);
         onDelete(true);
         // navigate("/admin-panel/products");
@@ -44,8 +41,8 @@ const AdminDeleteProduct = ({onDelete, itemDelete}) => {
       }
 
     }catch(err){
-      console.error("Error Updating Product...", err);
-      toast.error("Error Updating Product...");
+      // console.error("Error Deleting Catagory...", err);
+      toast.error("Error Deleting Catagory...");
     }finally{
       dispatch(loadingActions.setLoading(false)); // Hide loader
     }
@@ -84,6 +81,6 @@ const AdminDeleteProduct = ({onDelete, itemDelete}) => {
       )}
     </>
   );
-};
+}
 
-export default AdminDeleteProduct;
+export default AdminDeleteCatagory

@@ -1,32 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { IoClose } from "react-icons/io5";
+import ProductCatagory from "../helpers/ProductCatagory";
+import { FaFileUpload } from "react-icons/fa";
+import uploadImage from "../helpers/uploadImage";
+import ProductImageDisplay from "./ProductImageDisplay";
+import { MdDelete } from "react-icons/md";
 import SummaryApi from "../common";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { loadingActions } from "../store/loadingSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingSpinner from "../helpers/loadingSpinner";
-import uploadImage from "../helpers/uploadImage";
-import { MdDelete } from "react-icons/md";
-import { IoClose } from "react-icons/io5";
-import { FaFileUpload } from "react-icons/fa";
-import { addNewCatagory } from "../store/allCatagorySlice";
+import { fetchAllCatagory, updateCatagoryData } from "../store/allCatagorySlice";
 
-const UploadProductCatagory = ({onCloseCatagory}) => {
-
-  
+const AdminEditCatagory = ({ onClose, item }) => {
   const loadingStatus = useSelector((state) => state.loading);
   const dispatch = useDispatch();
   //initialize state for the data to enter
-  const [newProductCatagory, setNewProductCatagory] = useState({
-    catagoryName: "",
-    catagoryType: "",
-    catagoryImage: [],
+  const [productCatagory, setProductCatagory] = useState({
+    ...item,// as it is already created we need to provide ID also while updating
+    catagoryName: item?.catagoryName,
+    catagoryType: item?.catagoryType,
+    catagoryImage: item?.catagoryImage || [],
   });
 
   const [openFullScreenImage, setOpenFullScreenImage] = useState(false);
   const [fullScreenImage, setFullScreenImage] = useState("");
   const handleOnChange = (event) => {
     const { name, value } = event.target;
-    setNewProductCatagory((prev) => ({
+    setProductCatagory((prev) => ({
       ...prev,
       [name] : value,
     }));
@@ -36,20 +38,20 @@ const UploadProductCatagory = ({onCloseCatagory}) => {
 
     const uploadImageCloudinary = await uploadImage(file);
 
-    setNewProductCatagory((prev) => ({
+    setProductCatagory((prev) => ({
       ...prev,
       catagoryImage: [...prev.catagoryImage, uploadImageCloudinary.url],
     }));
   };
-  const newCatagoryImage = [];
+  
   // function to delete product image -start
   const handleOnDeleteProductImage = async(index) => {
     
 
-    const newCatagoryImage = [...newProductCatagory.catagoryImage]
-    newCatagoryImage.splice(index,1)
+    const newCatagoryImage = [...productCatagory.catagoryImage];
+    newCatagoryImage.splice(index,1);
 
-    setNewProductCatagory((prev) => ({
+    setProductCatagory((prev) => ({
       ...prev,
       catagoryImage: [...newCatagoryImage],
     }));
@@ -69,30 +71,31 @@ const UploadProductCatagory = ({onCloseCatagory}) => {
 
       dispatch(loadingActions.setLoading(true));
 
-      const dataResponse = await fetch (SummaryApi.upload_product_catagory.url,{
-        method: SummaryApi.upload_product_catagory.method,
+      const dataResponse = await fetch (SummaryApi.update_catagory.url,{
+        method: SummaryApi.update_catagory.method,
         credentials: "include",
         headers: {
           "content-type": "application/json",
         },
-        body: JSON.stringify(newProductCatagory),
+        body: JSON.stringify(productCatagory),
       })
 
       const dataApi = await dataResponse.json();
       
       if (dataApi.success) {
         
-        dispatch(addNewCatagory(dataApi.data));
+        dispatch(updateCatagoryData(dataApi.data));
+        dispatch(fetchAllCatagory(true));
         toast.success(dataApi.message);
-        onCloseCatagory(true);
+        onClose(true);
         
       } else if (dataApi.error) {
         toast.error(dataApi.message);
       }
 
     }catch(err){
-      console.error("Error Uploading Catagory...", err);
-      toast.error("Error Uploading Catagory...");
+      console.error("Error Updating Catagory...", err);
+      toast.error("Error Updating Catagory...");
     }finally{
       dispatch(loadingActions.setLoading(false)); // Hide loader
     }
@@ -105,13 +108,13 @@ const UploadProductCatagory = ({onCloseCatagory}) => {
     {loadingStatus ? (
         <LoadingSpinner />
       ) : (
-    <div className="bg-slate-200 bg-opacity-35 fixed h-full w-full right-0 left-0 top-0 bottom-0 flex justify-center items-center">
+    <div className="bg-slate-200 bg-opacity-35 fixed h-full w-full right-0 left-0 top-0 bottom-0 flex justify-center items-center z-50">
       <div className="bg-white p-4 rounded-md w-full max-w-[50%] h-full max-h-[80%] overflow-hidden">
         <div className=" p-4 m-2 flex justify-between items-center rounded ">
           <h2 className="font-semibold text-xl">Upload Catagory</h2>
           <div
             className="bg-red-600 p-1 rounded-full  text-white text-2xl w-fit ml-auto hover:scale-110 transition-all ease-in-out active:bg-red-800 active:scale-90 cursor-pointer"
-            onClick={onCloseCatagory}
+            onClick={onClose}
           >
             <IoClose />
           </div>
@@ -126,7 +129,7 @@ const UploadProductCatagory = ({onCloseCatagory}) => {
             type="text"
             id="catagoryName"
             placeholder="Enter Catagory Name"
-            value={newProductCatagory.catagoryName}
+            value={productCatagory.catagoryName}
             name="catagoryName"
             onChange={handleOnChange}
             required
@@ -142,7 +145,7 @@ const UploadProductCatagory = ({onCloseCatagory}) => {
             type="text"
             id="catagoryType"
             placeholder="Enter Catagory Type"
-            value={newProductCatagory.catagoryType}
+            value={productCatagory.catagoryType}
             name="catagoryType"
             required
             onChange={handleOnChange}
@@ -167,7 +170,8 @@ const UploadProductCatagory = ({onCloseCatagory}) => {
                 <input
                   type="file"
                   id="uploadImageInput"
-                  required
+                  name="uploadImageInput"
+                  //required
                   className="hidden"
                   onChange={handleUploadProductCatagory}
                 ></input>
@@ -175,8 +179,8 @@ const UploadProductCatagory = ({onCloseCatagory}) => {
             </div>
           </label>
           <div className="flex flex-wrap gap-2">
-            {newProductCatagory?.catagoryImage[0] ? (
-              newProductCatagory.catagoryImage.map((item,index) => (
+            {productCatagory?.catagoryImage[0] ? (
+              productCatagory.catagoryImage.map((item,index) => (
                 <div key={item+index} className="relative cursor-pointer hover:scale-150 transition-all ease-in-out group">
                   <img
                     src={item}
@@ -205,12 +209,12 @@ const UploadProductCatagory = ({onCloseCatagory}) => {
 
           
           
-          {/* buttom start */}
+          {/* button start */}
           <button
             type="submit"
             className="px-3 py-2  bg-red-600 rounded-md text-white text-sm transition-all ease-in-out active:bg-red-800 active:scale-95"
           >
-            Upload
+            Update
           </button>
           {/* button end */}
         </form>
@@ -230,4 +234,4 @@ const UploadProductCatagory = ({onCloseCatagory}) => {
   )
 }
 
-export default UploadProductCatagory
+export default AdminEditCatagory

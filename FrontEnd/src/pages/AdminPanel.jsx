@@ -52,7 +52,12 @@ const AdminPanel = () => {
               >
                 All Products
               </Link>
-              
+              <Link
+                to={"catagories"}
+                className="px-2 py-2 hover:bg-slate-100 shadow-md mt-2 rounded"
+              >
+                All Catagories
+              </Link>
             </nav>
           </div>
           {/* navigation end */}

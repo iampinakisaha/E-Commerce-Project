@@ -25,7 +25,7 @@ export const allProductSlice = createSlice({
     },
     updateProductData: (state, action) => {
       const index = state.products.findIndex(
-        (product) => product._id === action.payload._id
+        (product) => product._id === action.payload?._id
       );
       if (index !== -1) {
         state.products[index] = {
@@ -35,15 +35,15 @@ export const allProductSlice = createSlice({
       }
     },
     deleteProduct: (state, action) => {
-      // console.log("item deletion received",action.payload)
+   
       state.products = state.products.filter(
-        (product) => product._id !== action.payload
+        (product) => product._id !== action.payload?._id
       );
-      // console.log(state.products)
+    
     },
     fetchAllProduct: (state, action) => {
       state.fetchStatus = action.payload;
-      console.log(state.fetchStatus)
+     
     },
   },
 });

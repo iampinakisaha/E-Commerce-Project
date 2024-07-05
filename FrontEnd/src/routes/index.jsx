@@ -8,10 +8,12 @@ import AdminPanel from "../pages/AdminPanel";
 import AllUsers from "../pages/AllUsers";
 import AllProducts from "../pages/AllProducts";
 import ErrorPage from "../pages/ErrorPage";
+import ProductCatagory from "../helpers/ProductCatagory";
+import AllCatagory from "../pages/AllCatagory";
 export const router = createBrowserRouter([
   {
     path: "*",
-    element: <ErrorPage/>
+    element: <ErrorPage />,
   },
   {
     path: "/",
@@ -23,31 +25,34 @@ export const router = createBrowserRouter([
       },
       {
         path: "/login",
-        element: <Login/>,
+        element: <Login />,
       },
       {
         path: "/reset",
-        element: <ForgotPassword/>,
+        element: <ForgotPassword />,
       },
       {
         path: "/signup",
-        element: <Signup/>,
+        element: <Signup />,
       },
       {
         path: "/admin-panel",
-        element: <AdminPanel/>,
+        element: <AdminPanel />,
         children: [
           {
             path: "/admin-panel/all-users",
-            element: <AllUsers/>,
+            element: <AllUsers />,
           },
           {
             path: "/admin-panel/products",
-            element: <AllProducts/>,
+            element: <AllProducts />,
           },
-        ]
+          {
+            path: "/admin-panel/catagories",
+            element: <AllCatagory/>
+          },
+        ],
       },
-      
     ],
   },
 ]);
