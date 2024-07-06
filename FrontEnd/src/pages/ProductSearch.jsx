@@ -1,26 +1,36 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/home/Navbar";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { fetchAllProduct, setProducts } from "../store/allProductSlice";
+import { setProducts } from "../store/allProductSlice";
 import SummaryApi from "../common";
 import ItemCard from "../components/search/ItemCard";
 import LoadingSpinner from "../helpers/loadingSpinner";
 import { BsFilterCircle, BsFilterCircleFill } from "react-icons/bs";
 import classNames from 'classnames';
+import { useLocation } from "react-router-dom";
+import Header from "../components/Header";
+const ProductSearch = ({customSearch}) => {
 
-const ProductSearch = () => {
+  // const location = useLocation();
+  // const queryParams = new URLSearchParams(location?.search);
+  // const searchQuery = queryParams.get("query");
+
+  // console.log("Search Query:", searchQuery);
+
   const dispatch = useDispatch();
   const allProducts = useSelector((state) => state.productData.products);
   const fetchStatus = useSelector((state) => state.productData.fetchStatus);
   const categories = useSelector((state) => state.catagoryData.catagory);
-
+  
   const [searchCriteria, setSearchCriteria] = useState({
-    productName: "",
+    productName: customSearch || "",
     brandName: "",
     catagory: "",
     price: "",
   });
+  
+
+  
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -28,8 +38,6 @@ const ProductSearch = () => {
       ...prevCriteria,
       [name]: value,
     }));
-
-    
   };
  
   const ProductCatagory = categories
@@ -53,11 +61,9 @@ const ProductSearch = () => {
 
       if (dataResponse.success) {
         dispatch(setProducts(dataResponse.data || []));
-      } else {
-        // toast.error(dataResponse.message || "Failed to fetch Products");
       }
     } catch (error) {
-      // toast.error("Failed to fetch Products");
+      // Handle error
     } finally {
       setIsFetching(false);
     }
@@ -75,19 +81,27 @@ const ProductSearch = () => {
       brandName: "",
       catagory: "",
       price: "",
+      description: "",
     });
   };
 
   useEffect(() => {
-    fetchAllProducts({});
-  }, []);
+    if (customSearch) {
+      setSearchCriteria((prevCriteria) => ({
+        ...prevCriteria,
+        description: customSearch,
+      }));
+      fetchAllProducts({ description: customSearch });
+    } else {
+      fetchAllProducts({});
+    }
+  }, [customSearch]);
 
   useEffect(() => {
     if (fetchStatus) {
       fetchAllProducts({});
-      dispatch(fetchAllProduct(false));
     }
-  }, [fetchStatus, dispatch]);
+  }, [fetchStatus]);
 
   return (
     <div>
@@ -109,7 +123,6 @@ const ProductSearch = () => {
             {
               "block": isAsideOpen || window.innerWidth >= 768,
               "hidden": !isAsideOpen && window.innerWidth < 768,
-              
             }
           )}
         >
@@ -117,7 +130,7 @@ const ProductSearch = () => {
             <h2 className="text-xl text-gray-800 font-semibold p-2">Filters</h2>
             <button
               className="text-xs text-blue-600 font-semibold active:scale-95 transition-all"
-              onClick={() => handleClearAll({})}
+              onClick={handleClearAll}
             >
               CLEAR ALL
             </button>
@@ -157,7 +170,7 @@ const ProductSearch = () => {
                 />
 
                 <label htmlFor="catagory" className="font-semibold mt-3">
-                  Catagory :
+                  Category :
                 </label>
                 <select
                   value={searchCriteria.catagory}
@@ -165,7 +178,7 @@ const ProductSearch = () => {
                   onChange={handleOnChange}
                   className="p-2 bg-slate-100 border rounded"
                 >
-                  <option value={""}>--Select Catagory--</option>
+                  <option value={""}>--Select Category--</option>
                   {ProductCatagory.map((item, index) => (
                     <option value={item} key={item + index}>
                       {item}

@@ -1,20 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import Logo from "./Logo";
 import { GrSearch } from "react-icons/gr";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom"; 
 import { useDispatch, useSelector } from "react-redux";
 import { setUserDetails } from "../store/userSlice";
 import SummaryApi from "../common";
 import { toast } from "react-toastify";
-import { Navigate } from "react-router-dom";
 import Profile from "./Profile";
+import ProductSearch from "../pages/ProductSearch";
 
 const Header = () => {
+  const [customSearch, setCustomSearch] = useState({
+    customSearchInput: "",
+  });
+  const bagItems = useSelector((state) => state.bagData);
+  console.log("bag Items are", bagItems.length)
   const dispatch = useDispatch();
+  
+  const handleOnChange = (event) => {
+    console.log(event.key)
+    const { name, value } = event.target;
+    setCustomSearch((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  
 
-  //handle logout function start
 
   const handleLogout = async () => {
     const fetchData = await fetch(SummaryApi.logout_user.url, {
@@ -35,6 +49,7 @@ const Header = () => {
     }
   };
 
+  
   //handle logout function end
 
   // fetch user details from store[ we use useSelector from react-redux]
@@ -64,10 +79,14 @@ const Header = () => {
             type="text"
             placeholder="Search product here..."
             className="w-full outline-none"
+            id="customSearchInput"
+            name="customSearchInput"
+            value = {customSearch.customSearchInput}
+            onChange={handleOnChange}
           ></input>
-          <div className="text-xl min-w-[50px] bg-red-600 h-8 flex items-center justify-center rounded-r-full text-white">
+          <Link to={"/search"} className="text-xl min-w-[50px] bg-red-600 h-8 flex items-center justify-center rounded-r-full text-white" >
             <GrSearch />
-          </div>
+          </Link>
         </div>
         {/* search section ends*/}
 
@@ -106,7 +125,7 @@ const Header = () => {
               <FaShoppingCart />
             </span>
             <div className="bg-red-600 text-white h-5 w-5 rounded-full p-1 flex items-center justify-center absolute -top-2 -right-3">
-              <p className="text-base ">0</p>
+            <p className="text-base">{bagItems ? bagItems.length : 0}</p>
             </div>
           </div>
           {/* cart section ends*/}
@@ -138,6 +157,9 @@ const Header = () => {
           {/* login section ends */}
         </div>
         {/* user/cart/login section ends*/}
+      </div>
+      <div className="hidden">
+      <ProductSearch customSearch={customSearch.customSearchInput} />
       </div>
     </header>
   );

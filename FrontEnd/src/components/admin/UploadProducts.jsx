@@ -43,6 +43,7 @@ const UploadProducts = ({ onClose }) => {
   console.log(ProductCatagory);
   const [openFullScreenImage, setOpenFullScreenImage] = useState(false);
   const [fullScreenImage, setFullScreenImage] = useState("");
+  
   const handleOnChange = (event) => {
     const { name, value } = event.target;
     setNewProductData((prev) => ({

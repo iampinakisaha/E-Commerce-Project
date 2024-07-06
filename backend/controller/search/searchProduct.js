@@ -3,7 +3,7 @@ const productModel = require("../../models/productModel");
 async function searchProductController(req, res) {
   try {
     
-    const { productName, brandName, catagory, price } = req.body;
+    const { productName, brandName, catagory, price, description } = req.body;
 
    
 
@@ -11,6 +11,7 @@ async function searchProductController(req, res) {
     const payload = {
       ...(productName && { productName: { $regex: productName, $options: "i" } }),
       ...(brandName && { brandName: { $regex: brandName, $options: "i" } }),
+      ...(description && { description: { $regex: description, $options: "i" } }),
       ...(catagory && { catagory: catagory }),
       ...(price && { price: { $lte: price } }),
     };
