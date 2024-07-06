@@ -27,6 +27,7 @@ const AllProducts = () => {
   // Fetch all products
   const fetchAllProducts = async () => {
     try {
+      
       dispatch(loadingActions.setLoading(true));
 
       const dataFetch = await fetch(SummaryApi.all_products.url, {
@@ -71,9 +72,9 @@ const AllProducts = () => {
   const ProductCatagory = Catagoryies.map(str => str.toLowerCase());
  
 
-  useEffect(() => {
-    fetchAllProducts();
-  }, []);
+  // useEffect(() => {
+  //   fetchAllProducts();
+  // }, []);
 
   useEffect(() => {
     if (catagorySelected === "--All--") {
@@ -90,15 +91,10 @@ const AllProducts = () => {
     if (fetchStatus) {
       fetchAllProducts();
       dispatch(fetchAllProduct(false));
-    }
-  }, [fetchStatus, dispatch]);
-
-  useEffect(() => {
-    if (catagoryFetchStatus) {
       
-      dispatch(fetchAllCatagory(true));
     }
-  }, [catagoryFetchStatus, dispatch]);
+  }, [fetchStatus,catagoryFetchStatus, dispatch]);
+
 
   return (
     <>

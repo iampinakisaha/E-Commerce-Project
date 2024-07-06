@@ -67,9 +67,9 @@ const AllCatagory = () => {
   .filter((value, index, self) => self.indexOf(value) === index);
   
 
-  useEffect(() => {
-    fetchAllCatagories();
-  }, []);
+  // useEffect(() => {
+  //   fetchAllCatagories();
+  // }, []);
 
   useEffect(() => {
     if (catagoryTypeSelected === "--All--") {

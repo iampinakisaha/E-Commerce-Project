@@ -16,13 +16,12 @@ import {
   fetchAllProduct,
   updateProductData,
 } from "../store/allProductSlice";
+import { fetchAllCatagory } from "../store/allCatagorySlice";
 
 const AdminEditProduct = ({ onClose, item }) => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const loadingStatus = useSelector((state) => state.loading);
-  const allProducts = useSelector((state) => state.productData.products);
-
+  const categories = useSelector((state) => state.catagoryData.catagory);
   //initialize state for the item to enter
   const [productData, setProductData] = useState({
     ...item, // as it is already created we need to provide ID also while updating
@@ -34,6 +33,17 @@ const AdminEditProduct = ({ onClose, item }) => {
     price: item?.price,
     selling: item?.selling,
   });
+
+  //extract catagory names from allCatagory 
+  const ProductCatagory = categories
+  .map(obj => obj.catagoryName)
+  .filter((value, index, self) => self.indexOf(value) === index);
+
+  useEffect(() => {
+    dispatch(fetchAllCatagory(true));
+  }, [dispatch]);
+
+
   const [openFullScreenImage, setOpenFullScreenImage] = useState(false);
   const [fullScreenImage, setFullScreenImage] = useState("");
   const handleOnChange = (event) => {
@@ -172,7 +182,7 @@ const AdminEditProduct = ({ onClose, item }) => {
                 {ProductCatagory.map((item, index) => {
                   return (
                     <option value={item.value} key={item.value + index}>
-                      {item.label}
+                      {item}
                     </option>
                   );
                 })}

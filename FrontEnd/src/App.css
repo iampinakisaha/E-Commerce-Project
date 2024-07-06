@@ -12,3 +12,7 @@
 .userTable td{
   @apply border text-base text-center
 }
+/* scroolbar hdden*/
+.scroolbar-none::-webkit-scrollbar{
+  display: none;
+}

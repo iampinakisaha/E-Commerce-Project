@@ -9,14 +9,20 @@ async function uploadProductCatagoryController(req, res) {
     if (uploadProductPermission(sessionUser)) {
       
     const {catagoryName, catagoryType} = req.body
+    const newCatagoryName = catagoryName.toLowerCase();
+    const newCatagoryType = catagoryType.toLowerCase();
     const name = await productCatagoryModel.findOne({catagoryName})
     const type = await productCatagoryModel.findOne({catagoryType})
    
-    if (name === catagoryName && type === catagoryType) {
+    if (name === newCatagoryName && type === newCatagoryType) {
       throw new Error("Catagory Combination already exist");
     }
       
-      const uploadProductCatagory = new productCatagoryModel(req.body);
+      const uploadProductCatagory = new productCatagoryModel({
+        ...req.body,
+        catagoryName: newCatagoryName,
+        catagoryType: newCatagoryType,
+      });
       const saveProductCatagory = await uploadProductCatagory.save();
 
       

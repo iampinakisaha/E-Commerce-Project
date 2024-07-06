@@ -41,7 +41,7 @@ const UploadProductCatagory = ({onCloseCatagory}) => {
       catagoryImage: [...prev.catagoryImage, uploadImageCloudinary.url],
     }));
   };
-  const newCatagoryImage = [];
+  
   // function to delete product image -start
   const handleOnDeleteProductImage = async(index) => {
     

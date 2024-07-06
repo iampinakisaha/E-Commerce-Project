@@ -35,7 +35,7 @@ router.post("/update-product", authToken, updateProductController);
 router.post("/delete-product", authToken, deleteProductController);
 
 router.post("/upload-product-catagory", authToken, uploadProductCatagoryController);
-router.get("/allCatagory", authToken, getAllCatagoryController);
+router.get("/allCatagory",  getAllCatagoryController);
 router.post("/update-product-catagory", authToken, updateProductCatagoryController);
 router.post("/delete-catagory", authToken, deleteCatagoryController);
 
