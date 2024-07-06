@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { LuRefreshCcw } from "react-icons/lu";
-import UploadProducts from "../components/UploadProducts";
-import SummaryApi from "../common";
+import UploadProducts from "../../components/admin/UploadProducts";
+import SummaryApi from "../../common";
 import { toast } from "react-toastify";
-import { loadingActions } from "../store/loadingSlice";
+import { loadingActions } from "../../store/loadingSlice";
 import { useDispatch, useSelector } from "react-redux";
-import LoadingSpinner from "../helpers/loadingSpinner";
-import ProductCard from "../components/ProductCard";
+import LoadingSpinner from "../../helpers/loadingSpinner";
+import ProductCard from "../../components/admin/ProductCard";
 import { MdOutlineAdd } from "react-icons/md";
-import UploadProductCatagory from "../components/UploadProductCatagory";
-import { fetchAllCatagory, setCatagory } from "../store/allCatagorySlice";
-import CatagoryCard from "../components/CatagoryCard";
+import UploadProductCatagory from "../../components/admin/UploadProductCatagory";
+import { fetchAllCatagory, setCatagory } from "../../store/allCatagorySlice";
+import CatagoryCard from "../../components/admin/CatagoryCard";
 
 const AllCatagory = () => {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const AllCatagory = () => {
       });
 
       const dataResponse = await dataFetch.json();
-      
+
       if (dataResponse.success) {
         dispatch(setCatagory(dataResponse?.data || []));
       } else {
@@ -61,15 +61,14 @@ const AllCatagory = () => {
     }
   };
 
-  //extract all catagory type 
+  //extract all catagory type
   const ProductCatagory = allCatagory
-  .map(obj => obj.catagoryType)
-  .filter((value, index, self) => self.indexOf(value) === index);
-  
+    .map((obj) => obj.catagoryType)
+    .filter((value, index, self) => self.indexOf(value) === index);
 
-  // useEffect(() => {
-  //   fetchAllCatagories();
-  // }, []);
+  useEffect(() => {
+    fetchAllCatagories();
+  }, []);
 
   useEffect(() => {
     if (catagoryTypeSelected === "--All--") {
@@ -104,7 +103,7 @@ const AllCatagory = () => {
                 </label>
 
                 {/* need to fix- later - start */}
-                <select   
+                <select
                   value={catagoryTypeSelected}
                   name="catagory"
                   required
@@ -147,7 +146,7 @@ const AllCatagory = () => {
             className="flex flex-wrap gap-2 py-4 h-[calc(100vh-190px)] overflow-y-scroll bg-slate-50"
           >
             {filteredCatagories.map((item, index) => (
-              <CatagoryCard key={item._id + index} item={item} /> 
+              <CatagoryCard key={item._id + index} item={item} />
             ))}
           </div>
           {/* need to fix later - end */}
@@ -168,6 +167,6 @@ const AllCatagory = () => {
       )}
     </>
   );
-}
+};
 
-export default AllCatagory
+export default AllCatagory;

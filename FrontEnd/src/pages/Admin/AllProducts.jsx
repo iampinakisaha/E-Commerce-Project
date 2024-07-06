@@ -1,33 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { LuRefreshCcw } from "react-icons/lu";
-import UploadProducts from "../components/UploadProducts";
-import SummaryApi from "../common";
+import UploadProducts from "../../components/admin/UploadProducts";
+import SummaryApi from "../../common";
 import { toast } from "react-toastify";
-import { loadingActions } from "../store/loadingSlice";
+import { loadingActions } from "../../store/loadingSlice";
 import { useDispatch, useSelector } from "react-redux";
-import LoadingSpinner from "../helpers/loadingSpinner";
-import ProductCard from "../components/ProductCard";
-import { setProducts, fetchAllProduct } from "../store/allProductSlice";
-import { fetchAllCatagory } from "../store/allCatagorySlice";
-
+import LoadingSpinner from "../../helpers/loadingSpinner";
+import ProductCard from "../../components/admin/ProductCard";
+import { setProducts, fetchAllProduct } from "../../store/allProductSlice";
+import { fetchAllCatagory } from "../../store/allCatagorySlice";
 
 const AllProducts = () => {
   const dispatch = useDispatch();
   const allProducts = useSelector((state) => state.productData.products);
   const allCatagory = useSelector((state) => state.catagoryData.catagory);
   const fetchStatus = useSelector((state) => state.productData.fetchStatus);
-  const catagoryFetchStatus = useSelector((state) => state.catagoryData.fetchStatus);
+  const catagoryFetchStatus = useSelector(
+    (state) => state.catagoryData.fetchStatus
+  );
   const loadingStatus = useSelector((state) => state.loading);
 
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [catagorySelected, setCatagorySelected] = useState("--All--");
   const [openUploadProduct, setOpenUploadProduct] = useState(false);
- 
 
   // Fetch all products
   const fetchAllProducts = async () => {
     try {
-      
       dispatch(loadingActions.setLoading(true));
 
       const dataFetch = await fetch(SummaryApi.all_products.url, {
@@ -64,17 +63,16 @@ const AllProducts = () => {
     }
   };
 
-  //extract all catagory type 
+  //extract all catagory type
   const Catagoryies = allCatagory
-  .map(obj => obj.catagoryName)
-  .filter((value, index, self) => self.indexOf(value) === index);
+    .map((obj) => obj.catagoryName)
+    .filter((value, index, self) => self.indexOf(value) === index);
   //converting to lower case for the value to be lower case
-  const ProductCatagory = Catagoryies.map(str => str.toLowerCase());
- 
+  const ProductCatagory = Catagoryies.map((str) => str.toLowerCase());
 
-  // useEffect(() => {
-  //   fetchAllProducts();
-  // }, []);
+  useEffect(() => {
+    fetchAllProducts();
+  }, []);
 
   useEffect(() => {
     if (catagorySelected === "--All--") {
@@ -91,11 +89,9 @@ const AllProducts = () => {
     if (fetchStatus) {
       fetchAllProducts();
       dispatch(fetchAllProduct(false));
-      
     }
-  }, [fetchStatus,catagoryFetchStatus, dispatch]);
-
-
+  }, [fetchStatus, catagoryFetchStatus, dispatch]);
+  
   return (
     <>
       {/* Conditionally render spinner */}
@@ -125,7 +121,6 @@ const AllProducts = () => {
                       </option>
                     ))}
                 </select>
-               
               </div>
             )}
 
@@ -165,7 +160,6 @@ const AllProducts = () => {
               }}
             />
           )}
-          
         </div>
       )}
     </>

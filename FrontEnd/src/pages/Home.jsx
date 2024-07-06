@@ -1,6 +1,6 @@
 import React from "react";
-import WallpaperCarousel from "../components/homeComponents/WallpaperCarousel";
-import Navbar from "../components/homeComponents/Navbar";
+import WallpaperCarousel from "../components/home/WallpaperCarousel";
+import Navbar from "../components/home/Navbar";
 
 const Home = () => {
   return <div>

@@ -1,55 +1,50 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {  deleteCatagory } from "../store/allCatagorySlice";
-import SummaryApi from "../common";
+import { fetchAllProduct, deleteProduct } from "../../store/allProductSlice";
+import SummaryApi from "../../common";
 import { toast } from "react-toastify";
-import LoadingSpinner from "../helpers/loadingSpinner";
-import { loadingActions } from "../store/loadingSlice";
+import LoadingSpinner from "../../helpers/loadingSpinner";
+import { loadingActions } from "../../store/loadingSlice";
 
-const AdminDeleteCatagory = ({itemDelete,onDelete }) => {
+const AdminDeleteProduct = ({ onDelete, itemDelete }) => {
   const loadingStatus = useSelector((state) => state.loading);
   const dispatch = useDispatch();
-  const handleDeleteYes = async(event)=>{
+  const handleDeleteYes = async (event) => {
     event.preventDefault();
     try {
-      
       dispatch(loadingActions.setLoading(true));
 
-      const dataResponse = await fetch (SummaryApi.delete_catagory.url,{
-        method: SummaryApi.delete_catagory.method,
+      const dataResponse = await fetch(SummaryApi.delete_product.url, {
+        method: SummaryApi.delete_product.method,
         credentials: "include",
         headers: {
           "content-type": "application/json",
         },
         body: JSON.stringify(itemDelete),
-      
-      })
-      
+      });
+
       const dataApi = await dataResponse.json();
-      
+
       if (dataApi.success) {
-        dispatch(deleteCatagory(dataApi.data));
+        dispatch(deleteProduct(dataApi.data));
+
+        // dispatch(fetchAllProduct(true));
         toast.success(dataApi.message);
         onDelete(true);
         // navigate("/admin-panel/products");
-        
-        
-      
-        
       } else if (dataApi.error) {
         toast.error(dataApi.message);
       }
-
-    }catch(err){
-      // console.error("Error Deleting Catagory...", err);
-      toast.error("Error Deleting Catagory...");
-    }finally{
+    } catch (err) {
+      console.error("Error Updating Product...", err);
+      toast.error("Error Updating Product...");
+    } finally {
       dispatch(loadingActions.setLoading(false)); // Hide loader
     }
-  }
-  const handleDeleteNo = ()=>{
-    onDelete()
-  }
+  };
+  const handleDeleteNo = () => {
+    onDelete();
+  };
   return (
     <>
       {loadingStatus ? (
@@ -81,6 +76,6 @@ const AdminDeleteCatagory = ({itemDelete,onDelete }) => {
       )}
     </>
   );
-}
+};
 
-export default AdminDeleteCatagory
+export default AdminDeleteProduct;

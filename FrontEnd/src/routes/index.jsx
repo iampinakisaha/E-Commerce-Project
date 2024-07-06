@@ -4,12 +4,12 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import ForgotPassword from "../pages/ForgotPassword";
 import Signup from "../pages/Signup";
-import AdminPanel from "../pages/AdminPanel";
-import AllUsers from "../pages/AllUsers";
-import AllProducts from "../pages/AllProducts";
+import AdminPanel from "../pages/Admin/AdminPanel";
+import AllUsers from "../pages/Admin/AllUsers";
+import AllProducts from "../pages/Admin/AllProducts";
 import ErrorPage from "../pages/ErrorPage";
-import ProductCatagory from "../helpers/ProductCatagory";
-import AllCatagory from "../pages/AllCatagory";
+import AllCatagory from "../pages/Admin/AllCatagory";
+import ProductSearch from "../pages/ProductSearch";
 export const router = createBrowserRouter([
   {
     path: "*",
@@ -34,6 +34,10 @@ export const router = createBrowserRouter([
       {
         path: "/signup",
         element: <Signup />,
+      },
+      {
+        path: "/search",
+        element: <ProductSearch />,
       },
       {
         path: "/admin-panel",

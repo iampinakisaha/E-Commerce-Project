@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import AllProducts from "../pages/AllProducts";
+
 
 export const allProductSlice = createSlice({
   name: "productData",

@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
-import ProductCatagory from "../helpers/ProductCatagory";
 import { FaFileUpload } from "react-icons/fa";
-import uploadImage from "../helpers/uploadImage";
+import uploadImage from "../../helpers/uploadImage";
 import ProductImageDisplay from "./ProductImageDisplay";
 import { MdDelete } from "react-icons/md";
-import SummaryApi from "../common";
+import SummaryApi from "../../common";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { loadingActions } from "../store/loadingSlice";
+import { loadingActions } from "../../store/loadingSlice";
 import { useDispatch, useSelector } from "react-redux";
-import LoadingSpinner from "../helpers/loadingSpinner";
+import LoadingSpinner from "../../helpers/loadingSpinner";
 
 import {
   fetchAllProduct,
   updateProductData,
-} from "../store/allProductSlice";
-import { fetchAllCatagory } from "../store/allCatagorySlice";
+} from "../../store/allProductSlice";
+import { fetchAllCatagory } from "../../store/allCatagorySlice";
 
 const AdminEditProduct = ({ onClose, item }) => {
   const dispatch = useDispatch();
@@ -34,15 +33,14 @@ const AdminEditProduct = ({ onClose, item }) => {
     selling: item?.selling,
   });
 
-  //extract catagory names from allCatagory 
+  //extract catagory names from allCatagory
   const ProductCatagory = categories
-  .map(obj => obj.catagoryName)
-  .filter((value, index, self) => self.indexOf(value) === index);
+    .map((obj) => obj.catagoryName)
+    .filter((value, index, self) => self.indexOf(value) === index);
 
   useEffect(() => {
     dispatch(fetchAllCatagory(true));
   }, [dispatch]);
-
 
   const [openFullScreenImage, setOpenFullScreenImage] = useState(false);
   const [fullScreenImage, setFullScreenImage] = useState("");

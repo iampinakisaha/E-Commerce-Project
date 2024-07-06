@@ -58,6 +58,13 @@ const SummaryApi = {
     url : `${backendDomain}/api/update-product-catagory`,
     method: "post"
   },
+
+  // search product for all
+
+  search_products : {
+    url : `${backendDomain}/api/searchProducts`,
+    method: "post"
+  },
 }
 
 export default SummaryApi

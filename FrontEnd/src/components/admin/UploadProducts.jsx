@@ -1,25 +1,25 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { FaFileUpload } from "react-icons/fa";
-import uploadImage from "../helpers/uploadImage";
+import uploadImage from "../../helpers/uploadImage";
 import ProductImageDisplay from "./ProductImageDisplay";
 import { MdDelete } from "react-icons/md";
-import SummaryApi from "../common";
+import SummaryApi from "../../common";
 import { toast } from "react-toastify";
-import { loadingActions } from "../store/loadingSlice";
+import { loadingActions } from "../../store/loadingSlice";
 import { useDispatch, useSelector } from "react-redux";
-import LoadingSpinner from "../helpers/loadingSpinner";
-import { addNewProduct } from "../store/allProductSlice";
-import { fetchAllCatagory } from '../store/allCatagorySlice';
+import LoadingSpinner from "../../helpers/loadingSpinner";
+import { addNewProduct } from "../../store/allProductSlice";
+import { fetchAllCatagory } from "../../store/allCatagorySlice";
 
 const UploadProducts = ({ onClose }) => {
   const dispatch = useDispatch();
   const loadingStatus = useSelector((state) => state.loading);
   const products = useSelector((state) => state.productData.products);
   const categories = useSelector((state) => state.catagoryData.catagory);
-  
+
   console.log("product data are", products);
- 
+
   //initialize state for the data tp enter
   const [newProductData, setNewProductData] = useState({
     productName: "",
@@ -31,16 +31,16 @@ const UploadProducts = ({ onClose }) => {
     selling: "",
   });
 
-  //extract catagory names from allCatagory 
+  //extract catagory names from allCatagory
   const ProductCatagory = categories
-  .map(obj => obj.catagoryName)
-  .filter((value, index, self) => self.indexOf(value) === index);
+    .map((obj) => obj.catagoryName)
+    .filter((value, index, self) => self.indexOf(value) === index);
 
   useEffect(() => {
     dispatch(fetchAllCatagory(true));
   }, [dispatch]);
 
-  console.log(ProductCatagory)
+  console.log(ProductCatagory);
   const [openFullScreenImage, setOpenFullScreenImage] = useState(false);
   const [fullScreenImage, setFullScreenImage] = useState("");
   const handleOnChange = (event) => {

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import ROLE from "../common/role";
+import ROLE from "../../common/role";
 import { IoMdClose } from "react-icons/io";
-import { loadingActions } from "../store/loadingSlice";
+import { loadingActions } from "../../store/loadingSlice";
 import { useDispatch, useSelector } from "react-redux";
-import SummaryApi from "../common";
+import SummaryApi from "../../common";
 import { toast } from "react-toastify";
-import LoadingSpinner from "../helpers/loadingSpinner";
+import LoadingSpinner from "../../helpers/loadingSpinner";
 import { useNavigate } from "react-router-dom";
 
 const ChangeUserData = ({ user, onClose, onUpdateUser }) => {
@@ -64,8 +64,8 @@ const ChangeUserData = ({ user, onClose, onUpdateUser }) => {
 
   return (
     <>
-      {isVisible && (
-        loadingStatus ? (
+      {isVisible &&
+        (loadingStatus ? (
           <LoadingSpinner />
         ) : (
           <div className="top-0 bottom-0 left-0 right-0 absolute w-full h-full z-10 justify-between items-center">
@@ -76,7 +76,10 @@ const ChangeUserData = ({ user, onClose, onUpdateUser }) => {
               >
                 <IoMdClose />
               </div>
-              <form className="w-full max-w-md mx-auto bg-white" onSubmit={handleOnSubmit}>
+              <form
+                className="w-full max-w-md mx-auto bg-white"
+                onSubmit={handleOnSubmit}
+              >
                 <div className="w-full m-2 p-2 flex items-center justify-between">
                   <label className="w-1/4 font-semibold" htmlFor="name">
                     User Name:
@@ -112,7 +115,9 @@ const ChangeUserData = ({ user, onClose, onUpdateUser }) => {
                     defaultValue={user?.role || ""}
                   >
                     <option value="" disabled>
-                      {user?.role ? `Current Role: ${user.role}` : "Select a role"}
+                      {user?.role
+                        ? `Current Role: ${user.role}`
+                        : "Select a role"}
                     </option>
                     {Object.values(ROLE).map((data) => (
                       <option value={data} key={data}>
@@ -132,8 +137,7 @@ const ChangeUserData = ({ user, onClose, onUpdateUser }) => {
               </form>
             </div>
           </div>
-        )
-      )}
+        ))}
     </>
   );
 };

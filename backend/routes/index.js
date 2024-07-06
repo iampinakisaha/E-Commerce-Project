@@ -19,6 +19,7 @@ const getAllCatagoryController = require("../controller/product/getProductCatago
 const updateProductCatagoryController = require("../controller/product/updateProductCatagory");
 const deleteCatagoryController = require("../controller/product/deleteCatagory");
 
+const searchProductController = require("../controller/search/searchProduct");
 
 
 router.post("/signup", userSignUpController);
@@ -38,6 +39,9 @@ router.post("/upload-product-catagory", authToken, uploadProductCatagoryControll
 router.get("/allCatagory",  getAllCatagoryController);
 router.post("/update-product-catagory", authToken, updateProductCatagoryController);
 router.post("/delete-catagory", authToken, deleteCatagoryController);
+
+
+router.post("/searchProducts", searchProductController);
 
 
 module.exports = router;

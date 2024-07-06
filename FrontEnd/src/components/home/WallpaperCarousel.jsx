@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination, Autoplay } from 'swiper/modules';
-import { images }  from '../../helpers/';
+import { images }  from '../../helpers';
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCatagory } from "../../store/allCatagorySlice";
