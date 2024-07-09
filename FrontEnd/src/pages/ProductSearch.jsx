@@ -6,31 +6,25 @@ import SummaryApi from "../common";
 import ItemCard from "../components/search/ItemCard";
 import LoadingSpinner from "../helpers/loadingSpinner";
 import { BsFilterCircle, BsFilterCircleFill } from "react-icons/bs";
-import classNames from 'classnames';
-import { useLocation } from "react-router-dom";
+import classNames from "classnames";
+import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 import Header from "../components/Header";
-const ProductSearch = ({customSearch}) => {
+const ProductSearch = () => {
 
-  // const location = useLocation();
-  // const queryParams = new URLSearchParams(location?.search);
-  // const searchQuery = queryParams.get("query");
-
-  // console.log("Search Query:", searchQuery);
+  const params = useParams();
+ 
 
   const dispatch = useDispatch();
   const allProducts = useSelector((state) => state.productData.products);
   const fetchStatus = useSelector((state) => state.productData.fetchStatus);
   const categories = useSelector((state) => state.catagoryData.catagory);
-  
+
   const [searchCriteria, setSearchCriteria] = useState({
-    productName: customSearch || "",
+    productName: params.productName || "",
     brandName: "",
     catagory: "",
     price: "",
   });
-  
-
-  
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -39,7 +33,7 @@ const ProductSearch = ({customSearch}) => {
       [name]: value,
     }));
   };
- 
+
   const ProductCatagory = categories
     .map((obj) => obj.catagoryName)
     .filter((value, index, self) => self.indexOf(value) === index);
@@ -86,16 +80,16 @@ const ProductSearch = ({customSearch}) => {
   };
 
   useEffect(() => {
-    if (customSearch) {
+    if (params.productName) {
       setSearchCriteria((prevCriteria) => ({
         ...prevCriteria,
-        description: customSearch,
+        description: params.productName,
       }));
-      fetchAllProducts({ description: customSearch });
+      fetchAllProducts({ description: params.productName });
     } else {
       fetchAllProducts({});
     }
-  }, [customSearch]);
+  }, [params.productName]);
 
   useEffect(() => {
     if (fetchStatus) {
@@ -109,41 +103,43 @@ const ProductSearch = ({customSearch}) => {
         <Navbar />
       </nav>
 
-      <div className="flex flex-col md:flex-row gap-2 pb-2 pl-2 min-h-[calc(100vh-180px)] ">
-        <div
-          className="md:hidden block px-4 py-2 bg-white text-black rounded mb-2 customShadow "
-          onClick={() => setIsAsideOpen(!isAsideOpen)}
-        >
-          {isAsideOpen ? <BsFilterCircleFill /> : <BsFilterCircle />}
-        </div>
-
-        <aside 
-          className={classNames(
-            "bg-white min-h-full w-full md:w-1/4 customShadow my-0.5 ",
-            {
-              "block": isAsideOpen || window.innerWidth >= 768,
-              "hidden": !isAsideOpen && window.innerWidth < 768,
-            }
-          )}
-        >
-          <div className="flex justify-between p-2">
-            <h2 className="text-xl text-gray-800 font-semibold p-2">Filters</h2>
-            <button
-              className="text-xs text-blue-600 font-semibold active:scale-95 transition-all"
-              onClick={handleClearAll}
-            >
-              CLEAR ALL
-            </button>
+      <div className="container mx-auto p-4">
+        {/* filter head section - start */}
+        <div className="flex justify-between p-4 border rounded-t bg-white shadow-md ">
+          <div
+            onClick={() => setIsAsideOpen(!isAsideOpen)}
+            className="flex justify-center items-center gap-2 bg-blue-400 p-1 rounde cursor-pointer rounded hover:bg-blue-500 
+            active:scale-95 transition ease-in-out"
+          >
+            <span className="text-white font-semibold">FILTER</span>
+            {isAsideOpen ? (
+              <span className="text-xl text-white">
+                <BsFilterCircleFill />
+              </span>
+            ) : (
+              <span className="text-xl text-white">
+                <BsFilterCircle />
+              </span>
+            )}
           </div>
-          <hr />
-
-          <div>
-            <nav className="grid p-4 ">
+          <button
+            className="text-xs text-blue-600 font-semibold active:scale-95 transition-all"
+            onClick={handleClearAll}
+          >
+            CLEAR ALL
+          </button>
+        </div>
+          {/* filter head section - end */}
+        <div className="min-h-[600px] flex flex-col lg:flex-row gap-4 bg-white shadow-md">
+          {/* search section start */}
+          {isAsideOpen && (
+            <div className="h-96  mx-auto flex flex-col lg:flex-row-reverse gap-4 z-50 absolute">
               <form
-                className="grid p-2 gap-2 overflow-y-scroll h-[80%] scroolbar-none"
+                className="flex flex-col border p-4 gap-2 container overflow-scroll scroolbar-none rounded-b bg-white shadow-md"
                 onSubmit={handleOnSubmit}
               >
-                <label htmlFor="productName" className="font-semibold">
+                {/* product name start */}
+                <label htmlFor="productName" className="font-semibold pr-2">
                   Product Name :
                 </label>
                 <input
@@ -155,7 +151,9 @@ const ProductSearch = ({customSearch}) => {
                   onChange={handleOnChange}
                   className="p-2 bg-slate-100 border rounded"
                 />
+                {/* product name end */}
 
+                {/* brand name start */}
                 <label htmlFor="brandName" className="font-semibold mt-3">
                   Brand Name :
                 </label>
@@ -168,7 +166,9 @@ const ProductSearch = ({customSearch}) => {
                   onChange={handleOnChange}
                   className="p-2 bg-slate-100 border rounded"
                 />
+                {/* brand name end */}
 
+                {/* catagory start */}
                 <label htmlFor="catagory" className="font-semibold mt-3">
                   Category :
                 </label>
@@ -176,7 +176,7 @@ const ProductSearch = ({customSearch}) => {
                   value={searchCriteria.catagory}
                   name="catagory"
                   onChange={handleOnChange}
-                  className="p-2 bg-slate-100 border rounded"
+                  className="p-2 bg-slate-100 border rounded scroolbar-none"
                 >
                   <option value={""}>--Select Category--</option>
                   {ProductCatagory.map((item, index) => (
@@ -185,6 +185,9 @@ const ProductSearch = ({customSearch}) => {
                     </option>
                   ))}
                 </select>
+                {/* catagory end */}
+
+                {/* price start */}
 
                 <label htmlFor="price" className="font-semibold mt-3">
                   Price :
@@ -198,31 +201,39 @@ const ProductSearch = ({customSearch}) => {
                   onChange={handleOnChange}
                   className="p-2 bg-slate-100 border rounded"
                 />
+                {/* price end */}
 
+                {/* submit start */}
                 <button
                   type="submit"
-                  className="px-3 py-2 bg-red-600 rounded-md text-white text-sm transition-all ease-in-out active:bg-red-800 active:scale-95"
+                  className="p-2 mt-4 bg-red-600 rounded-md text-white text-sm transition-all ease-in-out active:bg-red-800 active:scale-95"
                 >
                   Search
                 </button>
+                {/* submit end */}
               </form>
-            </nav>
-          </div>
-        </aside>
+            </div>
+          )}
+          {/* search section ends */}
 
-        <main className="flex-1 ">
-          <div className="flex justify-center flex-wrap gap-2 py-4 h-[calc(100vh-90px)] overflow-y-scroll bg-slate-50 scroolbar-none">
+          {/* display section start */}
+          <div className="container mx-auto p-4">
+          <div className="flex flex-col lg:flex-row-reverse lg:flex-wrap justify-center items-center">
             {isFetching ? (
-              <LoadingSpinner />
+              <div className=""><LoadingSpinner size={10} position={"absolute"} bottom={"bottom-28"} top={"top-60"} /></div>
             ) : allProducts.length === 0 ? (
               <p className="text-center w-full">No products available.</p>
             ) : (
-              allProducts.map((item, index) => (
-                <ItemCard key={`${item._id}-${index}`} item={item} />
+              allProducts.map((item) => (
+                <Link to={"/product-details/" + item?._id} key={item?._id}>
+                  <ItemCard item={item} />
+                </Link>
               ))
             )}
           </div>
-        </main>
+          </div>
+          {/* display section ends */}
+        </div>
       </div>
     </div>
   );

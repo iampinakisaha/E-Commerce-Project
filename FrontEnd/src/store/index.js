@@ -1,17 +1,43 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer} from "redux-persist";
+import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist/es/constants";
+import storage from "redux-persist/lib/storage";
 import loadingSlice from "./loadingSlice";
 import userSlice from "./userSlice";
 import allProductSlice from "./allProductSlice";
 import allCatagorySlice from "./allCatagorySlice";
 import bagSlice from "./bagSlice";
-const eCommerceStore = configureStore({
-  reducer: {
-    loading: loadingSlice.reducer,
-    user: userSlice.reducer,
-    productData : allProductSlice.reducer,
-    catagoryData : allCatagorySlice.reducer,
-    bagData : bagSlice.reducer,
-  },
+
+// Configuration for redux-persist
+const persistConfig = {
+  key: 'root',
+  storage,
+};
+
+// Combine all reducers
+const rootReducer = combineReducers({
+  loading: loadingSlice.reducer,
+  user: userSlice.reducer,
+  productData: allProductSlice.reducer,
+  catagoryData: allCatagorySlice.reducer,
+  bagData: bagSlice.reducer,
 });
 
-export default eCommerceStore;
+// Persist the rootReducer
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+// Configure the store with persistedReducer and customized middleware
+const eCommerceStore = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+});
+
+// Create a persistor for the store
+const persistor = persistStore(eCommerceStore);
+
+export { eCommerceStore, persistor };

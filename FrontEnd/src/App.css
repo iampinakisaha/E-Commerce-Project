@@ -16,3 +16,7 @@
 .scroolbar-none::-webkit-scrollbar{
   display: none;
 }
+
+.text-justify {
+  text-align: justify;
+}

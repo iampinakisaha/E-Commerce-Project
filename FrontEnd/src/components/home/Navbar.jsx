@@ -43,7 +43,7 @@ const Navbar = () => {
 
   return (
     <>
-    {loadingStatus ? <LoadingSpinner/> : (
+    {!loadingStatus && (
       <div className="flex flex-row justify-evenly shadow-md bg-white font-semibold gap-5 p-2 m-2 ml-2 mr-2 mx-auto overflow-x-scroll scroolbar-none">
       {navbarCategories.map((item, index) => (
         <div key={item._id + index} className="flex flex-col justify-center items-center cursor-pointer hover:scale-110 transition-all ease-in-out group p-2">

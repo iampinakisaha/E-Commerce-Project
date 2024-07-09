@@ -2,7 +2,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Footer = () => {
   return (
-    <footer id="footer" className="bg-slate-200">
+    <footer id="footer" className="bg-slate-200 min-w-[390px]">
       <div className="container mx-auto p-4 ">
       <div className="mb-4">
           <h4 className="text-xl font-semibold">ShopNow</h4>

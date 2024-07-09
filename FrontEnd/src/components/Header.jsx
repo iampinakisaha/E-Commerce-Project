@@ -16,11 +16,11 @@ const Header = () => {
     customSearchInput: "",
   });
   const bagItems = useSelector((state) => state.bagData);
-  console.log("bag Items are", bagItems.length)
+  
   const dispatch = useDispatch();
   
   const handleOnChange = (event) => {
-    console.log(event.key)
+    
     const { name, value } = event.target;
     setCustomSearch((prev) => ({
       ...prev,
@@ -39,13 +39,13 @@ const Header = () => {
 
     if (dataApi.success) {
       toast.success(dataApi.message);
-      console.log("logout success");
+      
       dispatch(setUserDetails(null));
     }
 
     if (dataApi.error) {
       toast.error(dataApi.message);
-      console.log("logout failed", user._id);
+      
     }
   };
 
@@ -54,10 +54,10 @@ const Header = () => {
 
   // fetch user details from store[ we use useSelector from react-redux]
   const user = useSelector((state) => state?.user?.user); // state?.user?.user [we write this beacuse if key fields is not these it will show error]
-  // console.log(user);
+ 
 
   return (
-    <header className="h-16 shadow-md bg-white">
+    <header className="h-16 shadow-md bg-white min-w-[390px]">
       <div className="h-full container mx-auto flex items-center px-4 py-2 justify-between">
         {/* logo section start*/}
         <div
@@ -84,7 +84,7 @@ const Header = () => {
             value = {customSearch.customSearchInput}
             onChange={handleOnChange}
           ></input>
-          <Link to={"/search"} className="text-xl min-w-[50px] bg-red-600 h-8 flex items-center justify-center rounded-r-full text-white" >
+          <Link to={"/search/" + customSearch?.customSearchInput} className="text-xl min-w-[50px] bg-red-600 h-8 flex items-center justify-center rounded-r-full text-white" >
             <GrSearch />
           </Link>
         </div>
@@ -98,7 +98,7 @@ const Header = () => {
               className="text-3xl cursor-pointer transition-transform duration-300 ease-in-out transform active:scale-75 hover:scale-110"
               rel="user"
             >
-              {/* {console.log("User profile pic",user.profilePic)} */}
+              
               {user?.profilePic ? (
                 <img
                   src={user?.profilePic}
@@ -117,7 +117,7 @@ const Header = () => {
           {/* user section end*/}
 
           {/* cart section start*/}
-          <div
+          <Link to={"/bag-summary"}
             className="text-2xl cursor-pointer transition-transform duration-300 ease-in-out transform active:scale-75 flex a relative hover:scale-110"
             rel="cart"
           >
@@ -127,7 +127,7 @@ const Header = () => {
             <div className="bg-red-600 text-white h-5 w-5 rounded-full p-1 flex items-center justify-center absolute -top-2 -right-3">
             <p className="text-base">{bagItems ? bagItems.length : 0}</p>
             </div>
-          </div>
+          </Link>
           {/* cart section ends*/}
 
           {/* login section start */}
@@ -158,9 +158,7 @@ const Header = () => {
         </div>
         {/* user/cart/login section ends*/}
       </div>
-      <div className="hidden">
-      <ProductSearch customSearch={customSearch.customSearchInput} />
-      </div>
+     
     </header>
   );
 };

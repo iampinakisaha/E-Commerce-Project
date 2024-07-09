@@ -48,6 +48,9 @@ export const allProductSlice = createSlice({
   },
 });
 
-export const { setProducts, addNewProduct, updateProductData, deleteProduct, fetchAllProduct } = allProductSlice.actions;
+export const selectProductById = (state, productId) =>
+  state.productData.products.find((product) => product._id === productId);
+
+export const { setProducts, addNewProduct, updateProductData, deleteProduct, fetchAllProduct, fetchProductById } = allProductSlice.actions;
 
 export default allProductSlice;

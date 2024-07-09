@@ -10,6 +10,13 @@ import AllProducts from "../pages/Admin/AllProducts";
 import ErrorPage from "../pages/ErrorPage";
 import AllCatagory from "../pages/Admin/AllCatagory";
 import ProductSearch from "../pages/ProductSearch";
+import ItemDetailsPage from "../pages/ItemDetailsPage";
+import BagItem from "../pages/BagItem";
+import EmptyCart from "../helpers/EmptyCart";
+import Wishlist from "../pages/Wishlist";
+import Giftcard from "../pages/Giftcard";
+import UserProfileEdit from "../pages/UserProfileEdit";
+import ContactUs from "../pages/ContactUs";
 export const router = createBrowserRouter([
   {
     path: "*",
@@ -36,8 +43,38 @@ export const router = createBrowserRouter([
         element: <Signup />,
       },
       {
+        path: "/wishlist",
+        element: <Wishlist/>
+      },
+      {
+        path: "/giftcard",
+        element: <Giftcard/>
+      },
+      {
+        path: "/profile",
+        element: <UserProfileEdit/>
+      },
+      {
+        path: "/contact-us",
+        element: <ContactUs/>
+      },
+      {
         path: "/search",
         element: <ProductSearch />,
+        children: [
+          {
+            path: "/search/:productName",
+          element: <ProductSearch />,
+          }
+        ],
+      },
+      {
+        path: "/product-details/:itemId",
+        element: <ItemDetailsPage />,
+      },
+      {
+        path: "/bag-summary",
+        element: <BagItem/>
       },
       {
         path: "/admin-panel",
@@ -53,7 +90,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "/admin-panel/catagories",
-            element: <AllCatagory/>
+            element: <AllCatagory />,
           },
         ],
       },

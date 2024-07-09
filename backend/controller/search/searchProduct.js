@@ -19,7 +19,7 @@ async function searchProductController(req, res) {
   
 
     const productList = await productModel.find(payload).sort({ updatedAt: -1 });
-
+    await new Promise((resolve) => setTimeout(() => resolve(), 1000));
     res.status(200).json({
       data: productList,
       message: "Product Fetched Successfully.",
