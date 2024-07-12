@@ -35,7 +35,7 @@ const BagItem = React.memo(() => {
   const discount = totalPrice - OriginalPrice ? totalPrice - OriginalPrice : 0;
   const deliveryCharge = OriginalPrice >= 500 ? 0 : products.length && 40;
 
-  console.log(deliveryCharge);
+ 
   // Format numbers with commas
   const formattedTotalPrice = new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -60,13 +60,13 @@ const BagItem = React.memo(() => {
       maximumFractionDigits: 0,
     }).format(deliveryCharge);
   }
-  const payableAmount = totalPrice + deliveryCharge;
+  const payableAmount = OriginalPrice + deliveryCharge;
   const formattedpayableAmount = new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
     maximumFractionDigits: 0,
   }).format(payableAmount);
-  console.log(formattedDeliveryCharge);
+  
 
   if (!products.length) {
     return <EmptyCart />;
@@ -79,7 +79,7 @@ const BagItem = React.memo(() => {
               {/* product summary start */}
               {products.map((product) => (
                 <div className="relative" key={product._id}>
-                  <div className="grid grid-cols-[30%_70%] m-1 p-1 bg-white  sm:p-2 sm:m-2 rounded shadow-md ">
+                  <div className="grid grid-rows-[30%_70%] m-1 p-1 bg-white  sm:p-2 sm:m-2 rounded shadow-md ">
                     {/* image section start */}
                     <div className=" p-1 m-1 flex justify-center items-center border-[1px]">
                       <img

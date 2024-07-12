@@ -14,6 +14,7 @@ import {
   fetchAllCatagory,
   updateCatagoryData,
 } from "../../store/allCatagorySlice";
+import deleteImage from "../../helpers/deleteImage";
 
 const AdminEditCatagory = ({ onClose, item }) => {
   const loadingStatus = useSelector((state) => state.loading);
@@ -37,24 +38,36 @@ const AdminEditCatagory = ({ onClose, item }) => {
   };
   const handleUploadProductCatagory = async (event) => {
     const file = event.target.files[0];
+    const catagory = "product-catagory"; 
 
-    const uploadImageCloudinary = await uploadImage(file);
+    const cloudinaryFolder = `mernproduct/${catagory}/`;
+    const uploadImageCloudinary = await uploadImage(file, cloudinaryFolder);
 
     setProductCatagory((prev) => ({
       ...prev,
-      catagoryImage: [...prev.catagoryImage, uploadImageCloudinary.url],
+      catagoryImage: [...prev.catagoryImage, uploadImageCloudinary.data.url],
     }));
   };
 
   // function to delete product image -start
   const handleOnDeleteProductImage = async (index) => {
     const newCatagoryImage = [...productCatagory.catagoryImage];
-    newCatagoryImage.splice(index, 1);
+    const imageUrl = newCatagoryImage[index];
+    
+    
+    const dataApi =await deleteImage(imageUrl);
 
-    setProductCatagory((prev) => ({
-      ...prev,
-      catagoryImage: [...newCatagoryImage],
-    }));
+    if(dataApi.success) {
+      newCatagoryImage.splice(index, 1);
+      setProductCatagory((prev) => ({
+        ...prev,
+        catagoryImage: [...newCatagoryImage],
+      }));
+      toast.success("Image deleted successfully");
+    }
+    
+
+    
   };
 
   // function to delete product image - end

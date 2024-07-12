@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import LoadingSpinner from "../helpers/loadingSpinner";
 import { useContext } from "react";
 import UserContext  from "../context";
+import { setUserDetails } from "../store/userSlice";
 
 
 const Login = () => {
@@ -53,8 +54,9 @@ const Login = () => {
 
       if (dataApi.success) {
         toast.success(dataApi.message);
+        dispatch(setUserDetails(dataApi.data));
         navigate("/");
-        fetchUserDetails()
+        fetchUserDetails();
       }
       if (dataApi.error) {
         toast.error(dataApi.message);

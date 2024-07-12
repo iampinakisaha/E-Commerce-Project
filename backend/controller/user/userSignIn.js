@@ -24,7 +24,7 @@ async function userSignInController(req,res){
 
     const checkPassword = await bcrypt.compare(password, user.password);
 
-    console.log("checkPassword",checkPassword)
+  
 
     if(checkPassword){
 
@@ -32,8 +32,8 @@ async function userSignInController(req,res){
         _id : user._id,
         email : user.email,
       }
-      const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET_KEY, { expiresIn: '1h' });
-      
+      const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET_KEY, { expiresIn: 60 * 60  });
+     
       const tokenOption = {
         httpOnly : true,
         secure : true,

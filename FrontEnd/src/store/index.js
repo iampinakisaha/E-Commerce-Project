@@ -12,6 +12,7 @@ import bagSlice from "./bagSlice";
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['user'], // Exclude 'user' slice from persistence
 };
 
 // Combine all reducers
@@ -39,5 +40,10 @@ const eCommerceStore = configureStore({
 
 // Create a persistor for the store
 const persistor = persistStore(eCommerceStore);
+
+// Function to clear persisted data on session expiry
+export const clearPersistedStore = () => {
+  persistor.purge();
+};
 
 export { eCommerceStore, persistor };

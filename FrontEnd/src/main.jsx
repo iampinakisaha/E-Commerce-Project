@@ -9,7 +9,11 @@ import { router } from "./routes/index.jsx";
 import { eCommerceStore , persistor } from "./store/index.js";
 import LoadingSpinner from "./helpers/loadingSpinner.jsx";
 import { PersistGate } from 'redux-persist/integration/react';
+import SetupInterceptors from './routes/SetupInterceptors'; //if session expires then will route to main page
+
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   // <React.StrictMode>
 
@@ -17,7 +21,9 @@ root.render(
     <PersistGate loading={null} persistor={persistor}>
       <RouterProvider router={router}>
         <LoadingSpinner />
+        <SetupInterceptors> 
         <App />
+        </SetupInterceptors>
       </RouterProvider>
     </PersistGate>
   </Provider>

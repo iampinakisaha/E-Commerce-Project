@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  user: null,
+  user: {}, // Initialize as an empty object
 }
 
 export const userSlice = createSlice({
@@ -9,14 +9,15 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUserDetails: (state, action) => {
-      state.user = action.payload
-      // console.log("USER DETAILS: ", action.payload)
-    }
-    
+      state.user = action.payload;
+    },
+    clearUser: (state) => {
+      state.user = {}; // Clear user details to an empty object
+    },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setUserDetails } = userSlice.actions
+export const { setUserDetails, clearUser } = userSlice.actions
 
-export default userSlice
+export default userSlice;

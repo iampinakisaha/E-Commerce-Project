@@ -20,6 +20,9 @@ const updateProductCatagoryController = require("../controller/product/updatePro
 const deleteCatagoryController = require("../controller/product/deleteCatagory");
 
 const searchProductController = require("../controller/search/searchProduct");
+const userProfileEditController = require("../controller/user/userProfileEdit");
+const deleteCloudinaryImageController = require("../controller/cloudinary/cloudinaryImageDelete");
+const uploadCloudinaryImageController = require("../controller/cloudinary/cloudinaryImageUpload");
 
 
 router.post("/signup", userSignUpController);
@@ -43,5 +46,10 @@ router.post("/delete-catagory", authToken, deleteCatagoryController);
 
 router.post("/searchProducts", searchProductController);
 
+// for user
+router.post("/user-profile-update", authToken, userProfileEditController);
 
+//delete/upload image cloudinary
+router.post("/delete-image-cloudinary", authToken, deleteCloudinaryImageController);
+router.post("/upload-image-cloudinary", authToken, uploadCloudinaryImageController);
 module.exports = router;

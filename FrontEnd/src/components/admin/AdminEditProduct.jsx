@@ -16,6 +16,7 @@ import {
   updateProductData,
 } from "../../store/allProductSlice";
 import { fetchAllCatagory } from "../../store/allCatagorySlice";
+import deleteImage from "../../helpers/deleteImage";
 
 const AdminEditProduct = ({ onClose, item }) => {
   const dispatch = useDispatch();
@@ -53,24 +54,37 @@ const AdminEditProduct = ({ onClose, item }) => {
   };
   const handleUploadProduct = async (event) => {
     const file = event.target.files[0];
+    const catagory = "product"; 
 
-    const uploadImageCloudinary = await uploadImage(file);
+    const cloudinaryFolder = `mernproduct/${catagory}/`;
+    const uploadImageCloudinary = await uploadImage(file, cloudinaryFolder);
 
     setProductData((prev) => ({
       ...prev,
-      productImage: [...prev.productImage, uploadImageCloudinary.url],
+      productImage: [...prev.productImage, uploadImageCloudinary.data.url],
     }));
   };
 
   // function to delete product image -start
   const handleOnDeleteProductImage = async (index) => {
     const newProductImage = [...productData.productImage];
-    newProductImage.splice(index, 1);
 
-    setProductData((prev) => ({
-      ...prev,
-      productImage: [...newProductImage],
-    }));
+    const imageUrl = newProductImage[index];
+  
+
+    const dataApi = await deleteImage(imageUrl);
+
+    if(dataApi.success) {
+      newProductImage.splice(index, 1);
+      setProductData((prev) => ({
+        ...prev,
+        productImage: [...newProductImage],
+      }));
+      toast.success("Image deleted successfully");
+    }
+    
+
+    
   };
   // function to delete product image - end
 

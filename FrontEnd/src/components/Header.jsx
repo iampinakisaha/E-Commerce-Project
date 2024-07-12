@@ -5,13 +5,14 @@ import { FaRegCircleUser } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
 import { Link, useNavigate  } from "react-router-dom"; 
 import { useDispatch, useSelector } from "react-redux";
-import { setUserDetails } from "../store/userSlice";
+import { clearUser, setUserDetails } from "../store/userSlice";
 import SummaryApi from "../common";
 import { toast } from "react-toastify";
 import Profile from "./Profile";
 import ProductSearch from "../pages/ProductSearch";
 
 const Header = () => {
+  const navigate = useNavigate();
   const [customSearch, setCustomSearch] = useState({
     customSearchInput: "",
   });
@@ -39,8 +40,8 @@ const Header = () => {
 
     if (dataApi.success) {
       toast.success(dataApi.message);
-      
-      dispatch(setUserDetails(null));
+      dispatch(clearUser());
+      navigate('/login');
     }
 
     if (dataApi.error) {
@@ -117,8 +118,8 @@ const Header = () => {
           {/* user section end*/}
 
           {/* cart section start*/}
-          <Link to={"/bag-summary"}
-            className="text-2xl cursor-pointer transition-transform duration-300 ease-in-out transform active:scale-75 flex a relative hover:scale-110"
+          {(user?._id) ? (<Link to={"/bag-summary"}
+            className="text-2xl cursor-pointer transition-transform duration-300 ease-in-out transform active:scale-75 flex a relative hover:scale-110 select-none"
             rel="cart"
           >
             <span>
@@ -127,7 +128,18 @@ const Header = () => {
             <div className="bg-red-600 text-white h-5 w-5 rounded-full p-1 flex items-center justify-center absolute -top-2 -right-3">
             <p className="text-base">{bagItems ? bagItems.length : 0}</p>
             </div>
-          </Link>
+          </Link>) : (<Link to={"/login"}
+            className="text-2xl cursor-pointer transition-transform duration-300 ease-in-out transform active:scale-75 flex a relative hover:scale-110 select-none"
+            rel="cart"
+          >
+            <span>
+              <FaShoppingCart />
+            </span>
+            <div className="bg-red-600 text-white h-5 w-5 rounded-full p-1 flex items-center justify-center absolute -top-2 -right-3">
+            <p className="text-base">{bagItems ? bagItems.length : 0}</p>
+            </div>
+          </Link>)}
+          
           {/* cart section ends*/}
 
           {/* login section start */}
@@ -135,7 +147,7 @@ const Header = () => {
             {!user?._id ? (
               <div id="login">
                 <Link to={"/login"}>
-                  <button className="px-4 py-1 rounded-full text-white bg-red-600 cursor-pointer transition-transform duration-300 ease-in-out transform active:scale-75 active:bg-red-800 hover:scale-110">
+                  <button className="px-4 py-1 rounded-full text-white bg-red-600 cursor-pointer transition-transform duration-300 ease-in-out transform active:scale-75 active:bg-red-800 hover:scale-110 select-none">
                     Login
                   </button>
                 </Link>
@@ -144,7 +156,7 @@ const Header = () => {
               <div id="logout">
                 <Link to={"/login"}>
                   <button
-                    className="px-4 py-1 rounded-full text-white bg-red-600 cursor-pointer transition-transform duration-300 ease-in-out transform active:scale-75 active:bg-red-800 hover:scale-110"
+                    className="px-4 py-1 rounded-full text-white bg-red-600 cursor-pointer transition-transform duration-300 ease-in-out transform active:scale-75 active:bg-red-800 hover:scale-110 select-none"
                     //implement onclick for logout
                     onClick={handleLogout}
                   >

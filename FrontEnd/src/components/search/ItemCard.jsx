@@ -17,7 +17,7 @@ const ItemCard = React.memo(({ item }) => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+    }, 8000);
     return () => clearTimeout(timeout);
   }, [item]);
 
@@ -37,7 +37,7 @@ const ItemCard = React.memo(({ item }) => {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto p-2 m-2">
+      <div className="container mx-auto p-2 m-2 animate-pulse">
         <div
           className="flex flex-col lg:flex-row-reverse min-h-72 max-h-72 min-w-64 
       max-w-64 bg-slate-100 shadow-md"
@@ -48,8 +48,9 @@ const ItemCard = React.memo(({ item }) => {
               className="flex-1  w-full p-2 bg-white flex justify-center items-center "
               style={{ flex: "0 0 60%" }}
             >
+              
               <img
-                src={""}
+                src={"../src/assets/image-loading.gif"}
                 className="active:scale-110 transition-all ease-out"
                 alt={item.productName}
                 style={{

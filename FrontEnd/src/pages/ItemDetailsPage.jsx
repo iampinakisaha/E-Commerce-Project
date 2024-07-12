@@ -12,6 +12,8 @@ import { addToBag, removeFromBag, selectBagItems } from "../store/bagSlice";
 const ItemDetailsPage = React.memo(() => {
   const allProducts = useSelector((state) => state.productData.products);
   const fetchStatus = useSelector((state) => state.productData.fetchStatus);
+  const userDetails = useSelector((state) => state.user.user);
+  
   const params = useParams();
   const dispatch = useDispatch();
 
@@ -186,7 +188,7 @@ const ItemDetailsPage = React.memo(() => {
                     </button>
                   )}
 
-                  <Link to={"/bag-summary"} className="pr-2" >
+                  {(userDetails?._id) ? (<Link to={"/bag-summary"} className="pr-2" >
                     <button
                       className="flex-1 bg-red-500 h-14 text-white hover:bg-red-600 active:scale-95 transition-all ease-in-out rounded p-2 m-2 font-bold w-full"
                       onClick={handleOnBuyNow}
@@ -195,7 +197,17 @@ const ItemDetailsPage = React.memo(() => {
                         <AiFillThunderbolt /> BUY NOW
                       </span>
                     </button>
-                  </Link>
+                  </Link>) : (<Link to={"/login"} className="pr-2" >
+                    <button
+                      className="flex-1 bg-red-500 h-14 text-white hover:bg-red-600 active:scale-95 transition-all ease-in-out rounded p-2 m-2 font-bold w-full"
+                      onClick={handleOnBuyNow}
+                    >
+                      <span className="flex justify-center gap-2 items-center">
+                        <AiFillThunderbolt /> BUY NOW
+                      </span>
+                    </button>
+                  </Link>)}
+                  
                 </div>
               </div>
               {/* buttons end */}

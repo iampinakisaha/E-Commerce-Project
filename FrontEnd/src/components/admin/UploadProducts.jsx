@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import LoadingSpinner from "../../helpers/loadingSpinner";
 import { addNewProduct } from "../../store/allProductSlice";
 import { fetchAllCatagory } from "../../store/allCatagorySlice";
+import deleteImage from "../../helpers/deleteImage";
 
 const UploadProducts = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -53,26 +54,38 @@ const UploadProducts = ({ onClose }) => {
   };
   const handleUploadProduct = async (event) => {
     const file = event.target.files[0];
+    const catagory = "product"; 
 
-    const uploadImageCloudinary = await uploadImage(file);
+    const cloudinaryFolder = `mernproduct/${catagory}/`;
+    
+    const uploadImageCloudinary = await uploadImage(file, cloudinaryFolder);
 
     setNewProductData((prev) => ({
       ...prev,
-      productImage: [...prev.productImage, uploadImageCloudinary.url],
+      productImage: [...prev.productImage, uploadImageCloudinary.data.url],
     }));
   };
 
   // function to delete product image -start
   const handleOnDeleteProductImage = async (index) => {
-    console.log("image index", index);
+   
 
     const newProductImage = [...newProductData.productImage];
-    newProductImage.splice(index, 1);
+    const imageUrl = newProductImage[index];
+    
+    const dataApi = await deleteImage(imageUrl);
 
-    setNewProductData((prev) => ({
-      ...prev,
-      productImage: [...newProductImage],
-    }));
+    if(dataApi.success) {
+      newProductImage.splice(index, 1);
+      setNewProductData((prev) => ({
+        ...prev,
+        productImage: [...newProductImage],
+      }));
+      toast.success("Image deleted successfully");
+    }
+    
+
+    
   };
   // function to delete product image - end
 

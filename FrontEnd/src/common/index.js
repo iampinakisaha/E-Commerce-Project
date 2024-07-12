@@ -65,6 +65,23 @@ const SummaryApi = {
     url : `${backendDomain}/api/searchProducts`,
     method: "post"
   },
+
+  // user profile edit by user
+  user_profile_update : {
+    url : `${backendDomain}/api/user-profile-update`,
+    method: "post"
+  },
+
+  // delete image cloudinary
+  delete_image_cloudinary : {
+    url : `${backendDomain}/api/delete-image-cloudinary`,
+    method: "post"
+  },
+  // upload image cloudinary
+  upload_image_cloudinary : {
+    url : `${backendDomain}/api/upload-image-cloudinary/`,
+    method: "post"
+  },
 }
 
 export default SummaryApi

@@ -9,6 +9,7 @@ import { MdDelete } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import { FaFileUpload } from "react-icons/fa";
 import { addNewCatagory } from "../../store/allCatagorySlice";
+import deleteImage from "../../helpers/deleteImage";
 
 const UploadProductCatagory = ({ onCloseCatagory }) => {
   const loadingStatus = useSelector((state) => state.loading);
@@ -31,25 +32,44 @@ const UploadProductCatagory = ({ onCloseCatagory }) => {
   };
   const handleUploadProductCatagory = async (event) => {
     const file = event.target.files[0];
+    const catagory = "product-catagory"; 
+    const cloudinaryFolder = `mernproduct/${catagory}/`;
 
-    const uploadImageCloudinary = await uploadImage(file);
 
+    
+    
+    const uploadImageCloudinary = await uploadImage(file, cloudinaryFolder);
+    
+
+    if ( uploadImageCloudinary.success) {
     setNewProductCatagory((prev) => ({
       ...prev,
-      catagoryImage: [...prev.catagoryImage, uploadImageCloudinary.url],
+      catagoryImage: [...prev.catagoryImage, uploadImageCloudinary.data.url],
     }));
+    toast.success("Image uploaded successfully");
+    }
   };
 
   // function to delete product image -start
   const handleOnDeleteProductImage = async (index) => {
     const newCatagoryImage = [...newProductCatagory.catagoryImage];
-    newCatagoryImage.splice(index, 1);
+    const imageUrl = newCatagoryImage[index];
+   
+    
+    const dataApi =await deleteImage(imageUrl);
 
-    setNewProductCatagory((prev) => ({
-      ...prev,
-      catagoryImage: [...newCatagoryImage],
-    }));
+   
+    if(dataApi.success) {
+      newCatagoryImage.splice(index, 1);
+      setNewProductCatagory((prev) => ({
+        ...prev,
+        catagoryImage: newCatagoryImage,
+      }));
+      toast.success("Image deleted successfully");
+    }
+    
   };
+  
 
   // function to delete product image - end
 

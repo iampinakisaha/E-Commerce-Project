@@ -1,15 +1,34 @@
-const url = `https://api.cloudinary.com/v1_1/df7cb8u1b/image/upload`
+import { toast } from "react-toastify";
+import SummaryApi from "../common";
 
-const uploadImage = async(image) => {
-  const formData = new FormData()
-  formData.append("file",image)
-  formData.append("upload_preset","mern_product")
-  const dataResponse = await fetch(url,{
-    method: "post",
-    body: formData
-  })
+const uploadImage = async (image, folder) => {
+  const formData = new FormData();
+  formData.append("file", image);
+  formData.append("upload_preset", "mern_product");
+  formData.append("folder", folder);
 
-  return dataResponse.json()
-}
+  console.log("formData is", formData);
 
-export default uploadImage
+  try {
+    const response = await fetch(SummaryApi.upload_image_cloudinary.url, {
+      method: SummaryApi.upload_image_cloudinary.method,
+      credentials: "include",
+      body: formData,
+    });
+
+    const dataApi = await response.json();
+    console.log("dataApi is", dataApi);
+
+    if (dataApi.success) {
+      return dataApi;
+    } else {
+      throw new Error("Image upload failed");
+    }
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    toast.error("Failed to upload image");
+    throw error; // Propagate the error further if needed
+  }
+};
+
+export default uploadImage;

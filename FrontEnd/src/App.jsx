@@ -1,44 +1,56 @@
-import { Outlet } from "react-router-dom";
-import "./App.css";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import { ToastContainer } from "react-toastify";
-import SummaryApi from "./common";
-import { useEffect } from "react";
-import { UserContext } from "./context/index.jsx";
-import { useDispatch } from 'react-redux'
-import { setUserDetails } from "./store/userSlice.js";
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { setUserDetails, clearUser } from './store/userSlice';
+import { Outlet, useNavigate } from 'react-router-dom';
+import './App.css';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import { ToastContainer } from 'react-toastify';
+import { UserContext } from './context/index.jsx';
+
+import SummaryApi from './common';
 
 function App() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+
   const fetchUserDetails = async () => {
-    const dataResponse = await fetch(SummaryApi.current_user.url, {
-      method: SummaryApi.current_user.method,
-      credentials: "include",
-    });
+    try {
+      const dataResponse = await fetch(SummaryApi.current_user.url, {
+        method: SummaryApi.current_user.method,
+        credentials: 'include',
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+      });
 
-    const dataApi = await dataResponse.json();
-
-    //if user login is success update the redux store(userSlice)
-
-    if (dataApi.success) {
-      dispatch(setUserDetails(dataApi.data))
+      if (dataResponse.ok) {
+        const dataApi = await dataResponse.json();
+        dispatch(setUserDetails(dataApi.data));
+      } else if (dataResponse.status === 400) {
+        // Unauthorized (e.g., expired token)
+        console.error('Unauthorized:', dataResponse.statusText);
+        dispatch(clearUser());
+        navigate('/login');
+      } else {
+        // Other HTTP errors
+        console.error('Failed to fetch user details:', dataResponse.statusText);
+      }
+    } catch (error) {
+      console.error('Failed to fetch user details:', error);
+      // Handle network errors or other exceptions
     }
-
-    // console.log("data-user", dataApi.data);
   };
 
-  //this useEffect hook will run first time when page loads, as no initial data as passed it will not run until screen is refreshed. if suppose we leave from the current screen then this hook will get unmouted and return the fetchUserDetails() function
   useEffect(() => {
     fetchUserDetails();
   }, []);
 
   return (
     <>
-      <UserContext.Provider value = {{
-        fetchUserDetails //user details fetched
-        
-      }}>
+      <UserContext.Provider value={{ fetchUserDetails }}>
         <ToastContainer />
         <Header />
         <main className="min-h-[calc(100vh-180px)] min-w-[390px]">
