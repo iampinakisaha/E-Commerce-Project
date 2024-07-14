@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const EmptyCart = () => {
+const EmptyCart = ({item}) => {
+  console.log(item)
   return (
     <div className="h-[calc(100vh-180px)] bg-white shadow-md w-full m-4 mx-auto">
       <div className="grid justify-center items-center   h-[calc(100vh-600px)] pt-10">
@@ -18,10 +19,12 @@ const EmptyCart = () => {
         </div>
         <div className="grid justify-center items-center mt-2 gap-2">
           <span className="grid justify-center items-center text-lg font-semibold">
-            Your cart is Empty!
+            
+            Your {item ? (item) : ("cart")} is Empty!
           </span>
           <span className="grid justify-center items-center text-md text-gray-600">
-            Add items to it now.
+         
+            Add items to {item ? (item) : ("it")} now.
           </span>
         </div>
         <Link to={"/search"}>

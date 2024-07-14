@@ -1,19 +1,52 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectBagItems, removeFromBag } from "../store/bagSlice";
-import { selectProductById } from "../store/allProductSlice";
+import { selectBagItems, removeFromBag, addToBag, decrement, increment } from "../store/bagSlice";
+import { fetchAllProduct, selectProductById } from "../store/allProductSlice";
 import { AiFillThunderbolt } from "react-icons/ai";
 import { FaRupeeSign, FaShoppingCart } from "react-icons/fa";
 import EmptyCart from "../helpers/EmptyCart";
 import { MdDelete } from "react-icons/md";
+import SummaryApi from "../common";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import { GrSubtractCircle } from "react-icons/gr";
 const BagItem = React.memo(() => {
-  // Fetch bag items from Redux store
-  const bagItems = useSelector(selectBagItems);
   const dispatch = useDispatch();
-  // Fetch product details for each bag item
-  const products = useSelector((state) =>
-    bagItems.map((itemId) => selectProductById(state, itemId))
-  );
+ 
+  const bagItems = useSelector(selectBagItems);
+  const [products, setProducts] = useState([]);
+  
+  const fetchAllProducts = async (criteria) => {
+    try {
+      const dataFetch = await fetch(SummaryApi.bag_item_search.url, {
+        method: SummaryApi.bag_item_search.method,
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(criteria),
+      });
+     
+      const dataResponse = await dataFetch.json();
+
+      if (dataResponse.success) {
+        
+        setProducts(dataResponse.data)
+        
+       
+      }
+    } catch (error) {
+      
+      // Handle error
+    } 
+  };
+  
+  useEffect (() => {
+    fetchAllProducts(bagItems)
+  },[bagItems])
+
+
+  console.log("bagitems", bagItems)
+
 
   // handle on remove product
   const handleOnRemove = (event, id) => {
@@ -23,13 +56,14 @@ const BagItem = React.memo(() => {
 
   let formattedDeliveryCharge = 0;
   // bag summay calculations
-  // Calculate the total price of items in the bag
+  // Calculate the total price and original price based on counts
   const totalPrice = products?.reduce(
-    (sum, product) => sum + product?.price,
+    (sum, product) => sum + (product?.price * product?.count),
     0
   );
+
   const OriginalPrice = products?.reduce(
-    (sum, product) => sum + product?.selling,
+    (sum, product) => sum + (product?.selling * product?.count),
     0
   );
   const discount = totalPrice - OriginalPrice ? totalPrice - OriginalPrice : 0;
@@ -67,7 +101,14 @@ const BagItem = React.memo(() => {
     maximumFractionDigits: 0,
   }).format(payableAmount);
   
+  const handleOnIncrement = (_id) => {
+    dispatch(increment(_id));
+  };
 
+  const handleOnDecrement = (_id) => {
+    dispatch(decrement(_id));
+  };
+ 
   if (!products.length) {
     return <EmptyCart />;
   } else
@@ -75,28 +116,32 @@ const BagItem = React.memo(() => {
       <section>
         <div className=" p-2  max-h-[calc(100vh-180px)] min-h-[calc(100vh-180px)] mx-auto md:m-4 md:rounded">
           <div className="grid sm:flex sm:gap-2  h-[calc(100vh-180px)] ">
-            <section className="sm:w-[70%] overflow-y-scroll scroolbar-none mb-4">
+            <section className="sm:w-[70%] bg-white sm:p-2 sm:m-2 rounded shadow-md overflow-y-scroll scroolbar-none mb-4">
               {/* product summary start */}
-              {products.map((product) => (
-                <div className="relative" key={product._id}>
-                  <div className="grid grid-rows-[30%_70%] m-1 p-1 bg-white  sm:p-2 sm:m-2 rounded shadow-md ">
-                    {/* image section start */}
-                    <div className=" p-1 m-1 flex justify-center items-center border-[1px]">
+                <div className="m-2">
+                {products.map((product, index) => (
+                  <div className="flex mx-auto w-full border-[1px] rounded gap-2 mb-2 relative" key={product?._id + index}>
+                    <div className=" w-[30%]">
+                      {/* image section start */}
+                    <div className=" p-2 m-1 flex justify-center items-center border-[1px] rounded">
+                      {product?.productImage && product?.productImage[0] && (
                       <img
-                        src={product.productImage[0]} // Assuming productImage is an array
-                        className="active:scale-110 transition-all ease-out "
-                        alt={product.productImage[0]}
+                        src={product.productImage[0]}
+                        className="active:scale-110 transition-all ease-out"
+                        alt={product.productName}
                         style={{
                           maxWidth: "100%",
                           maxHeight: "100px",
                           objectFit: "contain",
                         }}
                       />
+                    )}
                     </div>
                     {/* image section end */}
-
-                    {/* product info section start */}
-                    <div className=" p-1 m-1 border-[1px] ">
+                    </div>
+                    <div className=" w-[70%]">
+                      {/* product info section start */}
+                    <div className=" p-2 m-1 border-[1px] rounded">
                       <div className="flex flex-col p-1">
                         {/* product name start */}
                         <div>
@@ -139,20 +184,34 @@ const BagItem = React.memo(() => {
                           </div>
                         </div>
                         {/* price end */}
+
+                        {/* count of items start */}
+                          <div className="border-[1px] border-black p-1 font-semibold w-[15%] flex justify-center items-center gap-2">
+                          <button onClick={() => handleOnIncrement(product._id)} className="text-black bg-orange-400 rounded-full hover:bg-orange-600 active:scale-95"><IoIosAddCircleOutline />
+                          </button>
+                          {product.count}
+                          <button onClick={() => handleOnDecrement(product._id)}  className="text-black bg-orange-400 rounded-full  hover:bg-orange-600 active:scale-95"><GrSubtractCircle /></button>
+                          </div>
+                          
+                        {/* count of items end */}
                       </div>
                     </div>
                     {/* product info section end */}
-                  </div>
+                    
+                    </div>
 
-                  {/* product remove button start*/}
-                  <div className="right-0 top-0 p-6 rounded-full text-2xl text-red-500 absolute hover:text-red-600 cursor-pointer active:scale-90 transition-all ease-in-out"
+                     {/* product remove button start*/}
+                  <div className="absolute right-0 bottom-0 p-6 rounded-full text-2xl text-red-500
+                  hover:text-red-600 cursor-pointer active:scale-90 transition-all ease-in-out"
                     onClick={(event) => handleOnRemove(event,product._id)}>
                     <MdDelete />
                   </div>
                   {/* product remove button end */}
+                  </div>
+                ))}
                 </div>
-              ))}
-              {/* product summary end */}
+                
+                {/* product summary end */}
             </section>
 
             <section className="sm:w-[30%] mb-4">
@@ -165,7 +224,7 @@ const BagItem = React.memo(() => {
                 <div className="flex flex-col p-2 gap-2">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-500 font-semibold">
-                      Price ({products?.length} items)
+                      Price ({bagItems?.length} items)
                     </span>
                     <span className="text-gray-500 font-semibold ">
                       {formattedTotalPrice}

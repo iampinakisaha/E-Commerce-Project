@@ -85,7 +85,7 @@ const Header = () => {
             value = {customSearch.customSearchInput}
             onChange={handleOnChange}
           ></input>
-          <Link to={"/search/" + customSearch?.customSearchInput} className="text-xl min-w-[50px] bg-red-600 h-8 flex items-center justify-center rounded-r-full text-white" >
+          <Link to={"/search/?productName=" + customSearch?.customSearchInput} className="text-xl min-w-[50px] bg-red-600 h-8 flex items-center justify-center rounded-r-full text-white" >
             <GrSearch />
           </Link>
         </div>

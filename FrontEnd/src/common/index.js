@@ -82,6 +82,19 @@ const SummaryApi = {
     url : `${backendDomain}/api/upload-image-cloudinary/`,
     method: "post"
   },
+
+  // bag item search
+  bag_item_search : {
+    url : `${backendDomain}/api/bag-item-search/`,
+    method: "post"
+  },
+
+  // user password reset
+  user_email_verify : {
+    url : `${backendDomain}/api/user-email-verify/`,
+    method: "post"
+  },
+ 
 }
 
 export default SummaryApi

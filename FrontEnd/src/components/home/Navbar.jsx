@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import SummaryApi from "../../common"; // Ensure SummaryApi is correctly imported
 import LoadingSpinner from "../../helpers/loadingSpinner"
 import { FaAngleDown } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 const Navbar = () => {
   const dispatch = useDispatch();
   const allCatagory = useSelector((state) => state.catagoryData.catagory);
@@ -37,7 +38,7 @@ const Navbar = () => {
   }, [dispatch]);
 
   const navbarCategories = allCatagory.filter(
-    (catagory) => catagory.catagoryType.toLowerCase() === "navbar"
+    (catagory) => catagory.catagoryType.toLowerCase() === "electronics"
   );
 
 
@@ -46,16 +47,16 @@ const Navbar = () => {
     {!loadingStatus && (
       <div className="flex flex-row justify-evenly shadow-md bg-white font-semibold gap-5 p-2 m-2 ml-2 mr-2 mx-auto overflow-x-scroll scroolbar-none">
       {navbarCategories.map((item, index) => (
-        <div key={item._id + index} className="flex flex-col justify-center items-center cursor-pointer hover:scale-110 transition-all ease-in-out group p-2">
+        <Link to={"/search/?catagory=" + item?.catagoryName} key={item._id + index} className="flex flex-col justify-center items-center cursor-pointer hover:scale-110 transition-all ease-in-out group p-2">
           <div>
             <img 
             src={item?.catagoryImage} 
             alt={item.catagoryName} 
-            className="h-16 w-16 object-cover mb-2"
+            className="h-16 w-16 object-contain mb-2"
           /></div>
           <div className="text-gray-800 text-sm capitalize">{item?.catagoryName}</div>
           <div className="hidden group-hover:block fixed bottom-0 mt-2 active:text-gray-400 transition-all ease-out"> <FaAngleDown /></div>
-        </div>
+        </Link>
       ))}
     </div>
     )}

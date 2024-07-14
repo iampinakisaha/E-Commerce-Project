@@ -19,7 +19,6 @@ const UploadProducts = ({ onClose }) => {
   const products = useSelector((state) => state.productData.products);
   const categories = useSelector((state) => state.catagoryData.catagory);
 
-  console.log("product data are", products);
 
   //initialize state for the data tp enter
   const [newProductData, setNewProductData] = useState({
@@ -31,7 +30,7 @@ const UploadProducts = ({ onClose }) => {
     price: "",
     selling: "",
   });
-
+  
   //extract catagory names from allCatagory
   const ProductCatagory = categories
     .map((obj) => obj.catagoryName)
@@ -41,7 +40,7 @@ const UploadProducts = ({ onClose }) => {
     dispatch(fetchAllCatagory(true));
   }, [dispatch]);
 
-  console.log(ProductCatagory);
+
   const [openFullScreenImage, setOpenFullScreenImage] = useState(false);
   const [fullScreenImage, setFullScreenImage] = useState("");
   
@@ -118,7 +117,7 @@ const UploadProducts = ({ onClose }) => {
         toast.error(dataApi.message);
       }
     } catch (err) {
-      console.error("Error Uploading Product...", err);
+    
       toast.error("Error Uploading Product...");
     } finally {
       dispatch(loadingActions.setLoading(false)); // Hide loader
@@ -192,9 +191,9 @@ const UploadProducts = ({ onClose }) => {
                 className="p-2  bg-slate-100 border rounded"
               >
                 <option value={""}>--Select Catagory--</option>
-                {ProductCatagory.map((item, index) => {
+                {ProductCatagory.map((item) => {
                   return (
-                    <option value={item.value} key={item.value + index}>
+                    <option value={item.catagoryName} key={item._id}>
                       {item}
                     </option>
                   );
@@ -217,6 +216,7 @@ const UploadProducts = ({ onClose }) => {
                     <input
                       type="file"
                       id="uploadImageInput"
+                      name="productImage"
                       required
                       className="hidden"
                       onChange={handleUploadProduct}

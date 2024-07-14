@@ -3,23 +3,22 @@ const productModel = require("../../models/productModel");
 async function searchProductController(req, res) {
   try {
     
-    const { productName, brandName, catagory, price, description } = req.body;
+    const { productName, brandName, catagory, price } = req.body;
 
-   
+    console.log("request received from fronrend",req.body)
 
     // Build the payload with the available search criteria
     const payload = {
       ...(productName && { productName: { $regex: productName, $options: "i" } }),
       ...(brandName && { brandName: { $regex: brandName, $options: "i" } }),
-      ...(description && { description: { $regex: description, $options: "i" } }),
       ...(catagory && { catagory: catagory }),
       ...(price && { price: { $lte: price } }),
     };
 
-  
+    
 
     const productList = await productModel.find(payload).sort({ updatedAt: -1 });
-    await new Promise((resolve) => setTimeout(() => resolve(), 1000));
+    // await new Promise((resolve) => setTimeout(() => resolve(), 1000));
     res.status(200).json({
       data: productList,
       message: "Product Fetched Successfully.",

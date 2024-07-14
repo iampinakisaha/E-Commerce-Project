@@ -1,18 +1,27 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { persistStore, persistReducer} from "redux-persist";
-import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist/es/constants";
+import { persistStore, persistReducer } from "redux-persist";
+import {
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist/es/constants";
 import storage from "redux-persist/lib/storage";
 import loadingSlice from "./loadingSlice";
 import userSlice from "./userSlice";
 import allProductSlice from "./allProductSlice";
 import allCatagorySlice from "./allCatagorySlice";
 import bagSlice from "./bagSlice";
+import allSearchSlice from "./allSearchSlice";
+import wishlistSlice from "./wishListSlice";
 
 // Configuration for redux-persist
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage,
-  blacklist: ['user'], // Exclude 'user' slice from persistence
+  blacklist: ["user"], // Exclude 'user' slice from persistence
 };
 
 // Combine all reducers
@@ -22,6 +31,8 @@ const rootReducer = combineReducers({
   productData: allProductSlice.reducer,
   catagoryData: allCatagorySlice.reducer,
   bagData: bagSlice.reducer,
+  searchData: allSearchSlice.reducer,
+  wishlistData: wishlistSlice.reducer,
 });
 
 // Persist the rootReducer

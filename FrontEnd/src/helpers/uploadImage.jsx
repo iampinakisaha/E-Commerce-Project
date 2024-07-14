@@ -7,7 +7,7 @@ const uploadImage = async (image, folder) => {
   formData.append("upload_preset", "mern_product");
   formData.append("folder", folder);
 
-  console.log("formData is", formData);
+ 
 
   try {
     const response = await fetch(SummaryApi.upload_image_cloudinary.url, {
@@ -17,7 +17,7 @@ const uploadImage = async (image, folder) => {
     });
 
     const dataApi = await response.json();
-    console.log("dataApi is", dataApi);
+   
 
     if (dataApi.success) {
       return dataApi;
@@ -25,7 +25,7 @@ const uploadImage = async (image, folder) => {
       throw new Error("Image upload failed");
     }
   } catch (error) {
-    console.error("Error uploading image:", error);
+  
     toast.error("Failed to upload image");
     throw error; // Propagate the error further if needed
   }

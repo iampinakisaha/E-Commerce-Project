@@ -4,15 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const allProductSlice = createSlice({
   name: "productData",
   initialState: {
-    products : [{
-      productName: "",
-      brandName: "",
-      catagory: "",
-      productImage: [],
-      description: "",
-      price: "",
-      selling: "",
-    }],
+    products : [],
     fetchStatus: false,
   },
   reducers: {
@@ -48,9 +40,24 @@ export const allProductSlice = createSlice({
   },
 });
 
-export const selectProductById = (state, productId) =>
-  state.productData.products.find((product) => product._id === productId);
+export const selectProductById = (state, productId) => 
+  
+  state.productData.products.find((product) => product?._id === productId);
 
 export const { setProducts, addNewProduct, updateProductData, deleteProduct, fetchAllProduct, fetchProductById } = allProductSlice.actions;
 
 export default allProductSlice;
+
+
+
+
+
+// {
+//   productName: "",
+//   brandName: "",
+//   catagory: "",
+//   productImage: [],
+//   description: "",
+//   price: "",
+//   selling: "",
+// }

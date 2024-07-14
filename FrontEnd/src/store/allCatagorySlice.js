@@ -4,11 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const allCatagorySlice = createSlice({
   name: "catagoryData",
   initialState: {
-    catagory : [{
-      catagoryName: "",
-      catagoryType: "",
-      catagoryImage: [],
-    }],
+    catagory : [],
     fetchStatus: false,
   },
   reducers: {
@@ -48,3 +44,11 @@ export const allCatagorySlice = createSlice({
 export const { setCatagory, addNewCatagory, updateCatagoryData, deleteCatagory, fetchAllCatagory } = allCatagorySlice.actions;
 
 export default allCatagorySlice;
+
+
+
+// {
+//   catagoryName: "",
+//   catagoryType: "",
+//   catagoryImage: [],
+// }

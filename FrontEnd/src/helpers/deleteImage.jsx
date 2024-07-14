@@ -8,7 +8,7 @@ const deleteImage = async (url) => {
 
     const public_id = extractPublicId(url);
 
-    console.log("public id is ",public_id)
+  
     const response = await fetch(SummaryApi.delete_image_cloudinary.url, {
       method: SummaryApi.delete_image_cloudinary.method,
       credentials: "include",
@@ -28,14 +28,14 @@ const deleteImage = async (url) => {
       throw new Error("Image deletion failed");
     }
   } catch (error) {
-    console.error("Error deleting image:", error);
+   
     toast.error("Failed to delete image");
   }
 };
 
 
 function extractPublicId(url) {
-  console.log(url)
+
   const uploadPath = '/mernproduct/';
   const uploadIndex = url.indexOf(uploadPath);
   if (uploadIndex === -1) {
@@ -45,7 +45,7 @@ function extractPublicId(url) {
   let publicIdWithExtension = url.slice(uploadIndex); // Extract after '/upload/'
         publicIdWithExtension = publicIdWithExtension.substring(1);
   const publicId = publicIdWithExtension.split('.')[0]; // Remove file extension
-  console.log("public id return",publicId)
+
   return publicId;
 }
 

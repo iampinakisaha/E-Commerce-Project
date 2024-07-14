@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../components/home/Navbar";
 import { FaShoppingCart } from "react-icons/fa";
@@ -9,18 +9,26 @@ import StarRating from "../helpers/StarRating";
 import LoadingSpinner from "..//helpers/loadingSpinner";
 import { createSelector } from "reselect";
 import { addToBag, removeFromBag, selectBagItems } from "../store/bagSlice";
+import { addToWishlist, fetchAllWishlist, removeFromWishlist, selectWishlistItems } from "../store/wishListSlice";
+import { IoMdHeart, IoMdHeartEmpty  } from "react-icons/io";
 const ItemDetailsPage = React.memo(() => {
-  const allProducts = useSelector((state) => state.productData.products);
-  const fetchStatus = useSelector((state) => state.productData.fetchStatus);
-  const userDetails = useSelector((state) => state.user.user);
-  
   const params = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  const fetchStatus = useSelector((state) => state.productData.fetchStatus);
+  const userDetails = useSelector((state) => state.user.user);
+  const allSearchWishlistItems = useSelector((state) => state.wishlistData.data);
+  const allProducts = useSelector((state) => state.searchData.search);
+
+  
+
+
+ 
   const item = allProducts.filter((item) => item?._id === params?.itemId);
 
   const selectElementFound = createSelector([selectBagItems], (bagItems) =>
-    bagItems.includes(item[0]._id)
+    bagItems.includes(item[0]?._id)
   );
   const elementFound = useSelector(selectElementFound);
 
@@ -33,6 +41,10 @@ const ItemDetailsPage = React.memo(() => {
       setCurrentImage(item[0]?.productImage[0]);
     }
   }, [item, currentImage]);
+
+  useEffect(() => {
+    dispatch(fetchAllWishlist(true)); // Dispatch once on mount if needed
+  }, [dispatch]);
 
   const handleMouseEnter = () => {
     setTimeout(() => setDisplayFull(true), 150); // Adding a delay of 150ms
@@ -48,17 +60,39 @@ const ItemDetailsPage = React.memo(() => {
 
   const handleAddToBag = (event) => {
     event.preventDefault();
-    dispatch(addToBag(item[0]._id));
+    dispatch(addToBag(item[0]?._id));
   };
 
   const handleRemove = (event) => {
     event.preventDefault();
-    dispatch(removeFromBag(item[0]._id));
+    dispatch(removeFromBag(item[0]?._id));
   };
 
   const handleOnBuyNow = () => {
-    dispatch(addToBag(item[0]._id));
+    navigate("/bag-summary");
   };
+
+  // check if cureent item is present in wishlist or not
+  // item check in wishlist
+  const selectElementFoundWishlist = createSelector(
+    [selectWishlistItems],
+    (wishlistItems) => wishlistItems.includes(item[0]?._id) 
+  );
+
+  const elementFoundWishlist = useSelector(selectElementFoundWishlist);
+  
+ 
+  const handleOnRemoveWishlist = (event) => {
+    event.preventDefault();
+    dispatch(removeFromWishlist(item[0]?._id))
+    
+  }
+
+  const handleOnAddWishlist = (event) => {
+    event.preventDefault();
+    dispatch(addToWishlist(item[0]?._id));
+    
+  }
 
   return (
     <>
@@ -74,17 +108,30 @@ const ItemDetailsPage = React.memo(() => {
         ) : (
           <div className="min-h-[200px] flex flex-col lg:flex-row gap-4">
             {/* product Image */}
-            <div className="h-96 flex flex-col lg:flex-row-reverse gap-4">
-              <div className="h-[300px] w-[300px] lg:h-96 lg:w-96 bg-slate-200 mx-auto justify-center items-center flex ">
+            <div className="h-96 flex flex-col lg:flex-row-reverse gap-4 ">
+              <div className="h-[300px] w-[300px] lg:h-96 lg:w-96 bg-slate-200 mx-auto justify-center items-center flex">
+                <div className="relative">
                 <img
                   src={currentImage}
                   key={currentImage}
                   alt="current product"
-                  className="h-full w-full  object-scale-down mix-blend-multiply cursor-pointer"
+                  className="h-full w-full  object-scale-down mix-blend-multiply cursor-pointer "
                   onClick={handleMouseEnter}
                 />
+                {elementFoundWishlist ? (
+                  <div className="absolute text-4xl top-0 right-0 text-red-600 hover:text-red-500 active:scale-95 cursor-pointer" onClick={handleOnRemoveWishlist}><IoMdHeart /></div>
+                ) : (
+                  <div className="absolute text-4xl top-0 right-0 text-green-600 hover:text-green-500 active:scale-95 cursor-pointer" onClick={handleOnAddWishlist}><IoMdHeartEmpty /></div>
+                )}
+                
+                
+                </div>
+                
+                
               </div>
-
+              
+             
+              
               <div className="h-full">
                 {!currentImage ? (
                   <div className="flex gap-2 lg:flex-col overflow-scroll  border scroolbar-none h-full">
@@ -188,26 +235,29 @@ const ItemDetailsPage = React.memo(() => {
                     </button>
                   )}
 
-                  {(userDetails?._id) ? (<Link to={"/bag-summary"} className="pr-2" >
-                    <button
-                      className="flex-1 bg-red-500 h-14 text-white hover:bg-red-600 active:scale-95 transition-all ease-in-out rounded p-2 m-2 font-bold w-full"
-                      onClick={handleOnBuyNow}
-                    >
-                      <span className="flex justify-center gap-2 items-center">
-                        <AiFillThunderbolt /> BUY NOW
-                      </span>
-                    </button>
-                  </Link>) : (<Link to={"/login"} className="pr-2" >
-                    <button
-                      className="flex-1 bg-red-500 h-14 text-white hover:bg-red-600 active:scale-95 transition-all ease-in-out rounded p-2 m-2 font-bold w-full"
-                      onClick={handleOnBuyNow}
-                    >
-                      <span className="flex justify-center gap-2 items-center">
-                        <AiFillThunderbolt /> BUY NOW
-                      </span>
-                    </button>
-                  </Link>)}
-                  
+                  {userDetails?._id ? (
+                    <Link to={"/bag-summary"} className="pr-2">
+                      <button
+                        className="flex-1 bg-red-500 h-14 text-white hover:bg-red-600 active:scale-95 transition-all ease-in-out rounded p-2 m-2 font-bold w-full"
+                        onClick={handleOnBuyNow}
+                      >
+                        <span className="flex justify-center gap-2 items-center">
+                          <AiFillThunderbolt /> BUY NOW
+                        </span>
+                      </button>
+                    </Link>
+                  ) : (
+                    <Link to={"/login"} className="pr-2">
+                      <button
+                        className="flex-1 bg-red-500 h-14 text-white hover:bg-red-600 active:scale-95 transition-all ease-in-out rounded p-2 m-2 font-bold w-full"
+                        onClick={handleOnBuyNow}
+                      >
+                        <span className="flex justify-center gap-2 items-center">
+                          <AiFillThunderbolt /> BUY NOW
+                        </span>
+                      </button>
+                    </Link>
+                  )}
                 </div>
               </div>
               {/* buttons end */}

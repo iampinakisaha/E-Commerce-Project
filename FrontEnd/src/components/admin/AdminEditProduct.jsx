@@ -191,9 +191,9 @@ const AdminEditProduct = ({ onClose, item }) => {
                 className="p-2  bg-slate-100 border rounded"
               >
                 <option value={""}>--Select Catagory--</option>
-                {ProductCatagory.map((item, index) => {
+                {ProductCatagory.map((item) => {
                   return (
-                    <option value={item.value} key={item.value + index}>
+                    <option value={item} key={item}>
                       {item}
                     </option>
                   );

@@ -17,6 +17,7 @@ import Wishlist from "../pages/Wishlist";
 import Giftcard from "../pages/Giftcard";
 import UserProfileEdit from "../pages/UserProfileEdit";
 import ContactUs from "../pages/ContactUs";
+import userPasswordReset from "../pages/userPasswordReset";
 export const router = createBrowserRouter([
   {
     path: "*",
@@ -37,6 +38,13 @@ export const router = createBrowserRouter([
       {
         path: "/reset",
         element: <ForgotPassword />,
+        children: [
+          {
+            path: "/reset/change-password",
+            element: <userPasswordReset/>
+          },
+        ]
+        
       },
       {
         path: "/signup",
@@ -65,7 +73,7 @@ export const router = createBrowserRouter([
           {
             path: "/search/:productName",
           element: <ProductSearch />,
-          }
+          },
         ],
       },
       {

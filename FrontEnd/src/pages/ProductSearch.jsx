@@ -8,21 +8,30 @@ import LoadingSpinner from "../helpers/loadingSpinner";
 import { BsFilterCircle, BsFilterCircleFill } from "react-icons/bs";
 import classNames from "classnames";
 import { Link, Outlet, useLocation, useParams } from "react-router-dom";
-import Header from "../components/Header";
+import { setSearchProduct } from "../store/allSearchSlice";
 const ProductSearch = () => {
 
-  const params = useParams();
- 
+  const location = useLocation(); // Access location object
+  const searchParams = new URLSearchParams(location.search); // Access query parameters
+  const [paramProductName, setParamProductName] = useState("");
+  const [paramCatagory, setParamCatagory] = useState("");
+
+  useEffect(() => {
+    // Update state variables with query parameters
+    setParamCatagory(searchParams.has('catagory') ? searchParams.get('catagory') : '');
+    setParamProductName(searchParams.has('productName') ? searchParams.get('productName') : '');
+  }, [searchParams]);
 
   const dispatch = useDispatch();
   const allProducts = useSelector((state) => state.productData.products);
   const fetchStatus = useSelector((state) => state.productData.fetchStatus);
   const categories = useSelector((state) => state.catagoryData.catagory);
-
+  const allSearchProduct = useSelector((state) => state.searchData.search);
+  
   const [searchCriteria, setSearchCriteria] = useState({
-    productName: params.productName || "",
+    productName: paramProductName,
     brandName: "",
-    catagory: "",
+    catagory: paramCatagory,
     price: "",
   });
 
@@ -54,7 +63,8 @@ const ProductSearch = () => {
       const dataResponse = await dataFetch.json();
 
       if (dataResponse.success) {
-        dispatch(setProducts(dataResponse.data || []));
+        // dispatch(setProducts(dataResponse.data || []));
+        dispatch(setSearchProduct(dataResponse.data || []));
       }
     } catch (error) {
       // Handle error
@@ -62,11 +72,13 @@ const ProductSearch = () => {
       setIsFetching(false);
     }
   };
-
+  
   const handleOnSubmit = async (event) => {
+
     event.preventDefault();
     setIsFetching(true);
     await fetchAllProducts(searchCriteria);
+    setIsFetching(false);
   };
 
   const handleClearAll = () => {
@@ -75,21 +87,44 @@ const ProductSearch = () => {
       brandName: "",
       catagory: "",
       price: "",
-      description: "",
+      
     });
   };
-
+  
   useEffect(() => {
-    if (params.productName) {
+  
+    if (paramProductName !== null) {
       setSearchCriteria((prevCriteria) => ({
         ...prevCriteria,
-        description: params.productName,
+        productName: paramProductName,
       }));
-      fetchAllProducts({ description: params.productName });
+      
+      setIsFetching(true);
+      fetchAllProducts({ productName: paramProductName });
+      
     } else {
+      setIsFetching(true);
       fetchAllProducts({});
+      setIsFetching(false);
     }
-  }, [params.productName]);
+  
+  }, [paramProductName]);
+
+  useEffect(() => {
+    if (paramCatagory !== null) {
+      setSearchCriteria((prevCriteria) => ({
+        ...prevCriteria,
+        catagory: paramCatagory,
+      }));
+      setIsFetching(true);
+      fetchAllProducts({ catagory: paramCatagory });
+      setIsFetching(false);
+    } else {
+      setIsFetching(true);
+      fetchAllProducts({});
+      setIsFetching(false);
+    }
+  }, [paramCatagory]);
 
   useEffect(() => {
     if (fetchStatus) {
@@ -221,10 +256,10 @@ const ProductSearch = () => {
           <div className="flex flex-col lg:flex-row-reverse lg:flex-wrap justify-center items-center">
             {isFetching ? (
               <div className=""><LoadingSpinner size={10} position={"absolute"} bottom={"bottom-28"} top={"top-60"} /></div>
-            ) : allProducts.length === 0 ? (
+            ) : allSearchProduct.length === 0 ? (
               <p className="text-center w-full">No products available.</p>
             ) : (
-              allProducts.map((item) => (
+              allSearchProduct.map((item) => (
                 <Link to={"/product-details/" + item?._id} key={item?._id}>
                   <ItemCard item={item} />
                 </Link>
