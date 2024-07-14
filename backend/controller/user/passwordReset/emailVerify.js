@@ -1,7 +1,7 @@
 const userModel = require("../../../models/userModel");
 
 async function userEmailVerifyController(req, res) {
-
+  console.log(req.body)
   try {
 
     const {email} = req.body
@@ -10,7 +10,7 @@ async function userEmailVerifyController(req, res) {
 
     
     if (user) {
-
+      console.log("user verified")
       res.status(200).json({
         error: false,
         success: true,

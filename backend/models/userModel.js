@@ -12,6 +12,7 @@ const  userSchema = new mongoose.Schema({
   password: String,
   profilePic: String,
   role: String,
+  verified: Boolean,
 },{
   timestamps: true
 })

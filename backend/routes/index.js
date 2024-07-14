@@ -25,6 +25,9 @@ const deleteCloudinaryImageController = require("../controller/cloudinary/cloudi
 const uploadCloudinaryImageController = require("../controller/cloudinary/cloudinaryImageUpload");
 const bagItemSearchController = require("../controller/search/bagItemSearch");
 const userEmailVerifyController = require("../controller/user/passwordReset/emailVerify");
+const userOTPVerificationController = require("../controller/user/passwordReset/otpVerification");
+const userOTPConfirmationController = require("../controller/user/passwordReset/confirmOTP");
+const userchangePasswordController = require("../controller/user/passwordReset/changePassword");
 
 
 router.post("/signup", userSignUpController);
@@ -61,7 +64,7 @@ router.post("/bag-item-search", authToken, bagItemSearchController);
 
 // user password reset
 router.post("/user-email-verify", userEmailVerifyController);
-
-
-
+router.post("/user-otp-verify", userOTPVerificationController);
+router.post("/user-otp-confirm", userOTPConfirmationController);
+router.post("/user-password-confirm", userchangePasswordController);
 module.exports = router;

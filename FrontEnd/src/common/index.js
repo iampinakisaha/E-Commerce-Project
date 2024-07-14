@@ -94,6 +94,18 @@ const SummaryApi = {
     url : `${backendDomain}/api/user-email-verify/`,
     method: "post"
   },
+  user_otp_verify : {
+    url : `${backendDomain}/api/user-otp-verify/`,
+    method: "post"
+  },
+  user_otp_confirm : {
+    url : `${backendDomain}/api/user-otp-confirm/`,
+    method: "post"
+  },
+  user_password_confirm : {
+    url : `${backendDomain}/api/user-password-confirm/`,
+    method: "post"
+  },
  
 }
 
