@@ -191,9 +191,9 @@ const UploadProducts = ({ onClose }) => {
                 className="p-2  bg-slate-100 border rounded"
               >
                 <option value={""}>--Select Catagory--</option>
-                {ProductCatagory.map((item) => {
+                {ProductCatagory.map((item, index) => {
                   return (
-                    <option value={item.catagoryName} key={item._id}>
+                    <option value={item.catagoryName} key={item.catagoryName}>
                       {item}
                     </option>
                   );

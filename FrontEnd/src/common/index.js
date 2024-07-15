@@ -90,10 +90,6 @@ const SummaryApi = {
   },
 
   // user password reset
-  user_email_verify : {
-    url : `${backendDomain}/api/user-email-verify/`,
-    method: "post"
-  },
   user_otp_verify : {
     url : `${backendDomain}/api/user-otp-verify/`,
     method: "post"

@@ -22,7 +22,7 @@ async function userchangePasswordController(req,res){
     const hashPassword = await bcrypt.hashSync(password, salt); //pass password from signup form body
 
     const userPasswordUpdate = await userModel.findByIdAndUpdate(user._id, {password: hashPassword});
-
+    await new Promise((resolve) => setTimeout(() => resolve(), 4000)); // this will await for 4000 ms to deliver the response
     res.status(200).json({
       error: false,
       success: true,

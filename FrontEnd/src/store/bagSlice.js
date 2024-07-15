@@ -10,7 +10,7 @@ const bagSlice = createSlice({
       // if (!state.some(item => item === action.payload)) {
         
       // }
-      console.log("action.payload",action.payload)
+     
       state.push(action.payload);
       localStorage.setItem('bagData', JSON.stringify(state));
     },

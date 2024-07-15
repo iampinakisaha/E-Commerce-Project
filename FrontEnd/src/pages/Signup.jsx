@@ -69,7 +69,7 @@ const Signup = () => {
 
         const dataApi = await dataResponse.json();
 
-        // console.log("DataApi", dataApi);
+      
 
         if (dataApi.success) {
           toast.success(dataApi.message);
@@ -81,7 +81,7 @@ const Signup = () => {
         }
       }
     } catch (err) {
-      // console.log(err);
+      
     } finally {
       dispatch(loadingActions.setLoading(false)); // Hide loader
     }

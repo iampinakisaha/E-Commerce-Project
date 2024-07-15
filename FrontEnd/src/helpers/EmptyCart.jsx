@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const EmptyCart = ({item}) => {
-  console.log(item)
+  
   return (
     <div className="h-[calc(100vh-180px)] bg-white shadow-md w-full m-4 mx-auto">
       <div className="grid justify-center items-center   h-[calc(100vh-600px)] pt-10">

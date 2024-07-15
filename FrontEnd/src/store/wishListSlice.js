@@ -19,7 +19,7 @@ const wishlistSlice = createSlice({
     removeFromWishlist: (state, action) => {
       state.data = state.data.filter(item => item !== action.payload); // Mutating state here
       localStorage.setItem('wishlistData', JSON.stringify(state.data)); // Update localStorage
-      console.log("removed")
+     
     },
     clearWishlist: (state) => {
       state.data = []; // Mutating state here

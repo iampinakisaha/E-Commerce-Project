@@ -7,7 +7,7 @@ const AdminPanel = () => {
   const user = useSelector((state) => state?.user?.user);
   const userRole = useSelector((state) => state?.user?.user?.role);
   const navigate = useNavigate();
-  // console.log(userRole)
+ 
   if (userRole === ROLE.ADMIN) {
     return (
       // check if user is admin then show the content
@@ -18,7 +18,7 @@ const AdminPanel = () => {
               className="text-6xl cursor-pointer transition-transform duration-300 ease-in-out transform active:scale-75 hover:scale-110"
               rel="user"
             >
-              {/* {console.log("User profile pic",user.profilePic)} */}
+             
               {user?.profilePic ? (
                 <img
                   src={user?.profilePic}

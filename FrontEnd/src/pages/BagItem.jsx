@@ -45,7 +45,6 @@ const BagItem = React.memo(() => {
   },[bagItems])
 
 
-  console.log("bagitems", bagItems)
 
 
   // handle on remove product

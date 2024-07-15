@@ -10,11 +10,11 @@ const Wishlist = () => {
   const dispatch = useDispatch();
   const allSearchWishlistItems = useSelector((state) => state.wishlistData.data);
   const wishlistfetchStatus = useSelector((state) => state.wishlistData.fetchStatus);
-  console.log("wishlist items are",allSearchWishlistItems)
+  
   const [wishlist, setWishlist] = useState([]);
   const fetchAllProducts = async (criteria) => {
     try {
-      console.log("fetch start..................", criteria)
+     
       const dataFetch = await fetch(SummaryApi.bag_item_search.url, {
         method: SummaryApi.bag_item_search.method,
         credentials: "include",
@@ -24,17 +24,17 @@ const Wishlist = () => {
         
         body: JSON.stringify(criteria),
       });
-      console.log("fetch end..................")
+      
       const dataResponse = await dataFetch.json();
 
       if (dataResponse.success) {
-        console.log(dataResponse.data)
+        
         setWishlist(dataResponse.data)
         // dispatch(setSearchProduct(dataResponse.data || []));
        
       }
     } catch (error) {
-      console.log("fetching error...................")
+    
       // Handle error
     } 
   };
